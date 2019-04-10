@@ -27,7 +27,10 @@ const buildGraph = async () => {
     let stackBarSvg = stackBarContainerSvg.append("g")
         .attr("transform", "translate(" + (stackBarContainerSvgWidth / 2.0 - stackBarWidth / 2.0) + "," + stackBarPadding.top + ")");
 
+    let stackBarContentsSVG = stackBarSvg.append("g");
 
+    let stackBarXAxisSVGComponent = stackBarSvg.append("g");
+    let stackBarYAxisSVGComponent = stackBarSvg.append("g");
 
 
     /* Creating legend for colors */
@@ -71,18 +74,22 @@ const buildGraph = async () => {
     // });
 
 
-    function update_attributes(x_attr, y_attr) {
-        const x_category = x_attr;
-        const y_category = y_attr;
+    function reload_attributes() {
+        const x_category = param2_select.value;
+        const y_category = param1_select.value;
 
-        const data_key = x_category + "_" + y_category;
+        const data_key = y_category + "_" + x_category;
         // console.log(data_key)
 
-        const graph_data = bar_graph_data[data_key];
-        // console.log(graph_data)
+        const graph_data = bar_graph_data[data_key][1];
+        const columns = bar_graph_data[data_key][0];
+        console.log(columns)
 
-        const x_vals = graph_data.map(x => x[0]);
-        // console.log(x_vals)
+        const x_vals = graph_data.map(x => x[x_category]);
+        // console.log(graph_data)
+        // console.log(graph_data);
+        // console.log(x_category)
+        // console.log(x_vals);
 
         let stackBarXScale = d3.scaleBand()
             .domain(x_vals)
@@ -102,13 +109,22 @@ const buildGraph = async () => {
             .scale(stackBarYScale)
             .tickSize(10)
 
+        // console.log(graph_data[0]["keys"])
+
+        let stackBarStack = d3.stack()
+            .keys(columns);
+
+        let series = stackBarStack(graph_data)
+
+        // console.log(series)
+
         /* Append axis SVG components to DOM */
-        let stackBarXAxisSVGComponent = stackBarSvg.append("g")
+        stackBarXAxisSVGComponent
             .attr("transform", "translate(0," + (stackBarHeight) + ")")
             .attr("class", "x")
             .call(stackBarXAxis)
 
-        let stackBarYAxisSVGComponent = stackBarSvg.append("g")
+        stackBarYAxisSVGComponent
             .attr("transform", "translate(0,0)")
             .attr("class", "y")
             .call(stackBarYAxis);
@@ -122,26 +138,6 @@ const buildGraph = async () => {
             .attr('stroke-width', '2px')
             .attr("transform", "translate(0,-0.5)")
         stackBarYAxisSVGComponent.selectAll(".tick text").attr("y", 0).attr("dx", 0);
-
-        /* Add left edge for x axis */
-        stackBarSvg.append("line")
-            .attr("x1", 0)
-            .attr("x2", 0)
-            .attr("y1", 0)
-            .attr("y2", stackBarHeight)
-            .attr("stroke", "#000000")
-            .attr("stroke-width", "2px")
-            .attr("class", "yAxisBoundary")
-
-        /* Add left edge for y axis */
-        stackBarSvg.append("line")
-            .attr("x1", 0)
-            .attr("x2", stackBarWidth)
-            .attr("y1", stackBarHeight)
-            .attr("y2", stackBarHeight)
-            .attr("stroke", "#000000")
-            .attr("stroke-width", "2px")
-            .attr("class", "yAxisBoundary")
 
 
         /* Add axes labels */
@@ -164,44 +160,102 @@ const buildGraph = async () => {
         let stackBarColorScale = d3.schemeCategory10;
         let verticalSpacing = 1;
 
-        graph_data
-            .forEach((x_category) => {
-                x_val = x_category[0];
-                b_counts = x_category[1];
+        // graph_data
+        //     .forEach((x_category) => {
+        //         x_val = x_category[0];
+        //         b_counts = x_category[1];
 
-                var currentY = stackBarHeight;
+        //         var currentY = stackBarHeight;
 
-                b_counts.forEach((b_category, index) => {
-                    category_name = b_category[0];
-                    subcategory_count = b_category[1];
-                    let barTopY = stackBarYScale(subcategory_count);
-                    let height = stackBarHeight - barTopY;
-                    stackBarSvg.append("rect")
-                        .attr("width", stackBarXScale.bandwidth)
-                        .attr("height", Math.max(height - verticalSpacing, 0))
-                        .attr("x", stackBarXScale(x_val))
-                        .attr("y", barTopY - stackBarHeight + currentY)
-                        .style("fill", stackBarColorScale[index])
-                        .style("opacity", 0.75 - (index % 2) * 0.25)
+        //         b_counts.forEach((b_category, index) => {
+        //             category_name = b_category[0];
+        //             subcategory_count = b_category[1];
+        //             let barTopY = stackBarYScale(subcategory_count);
+        //             let height = stackBarHeight - barTopY;
+        //             stackBarSvg.append("rect")
+        //                 .attr("width", stackBarXScale.bandwidth)
+        //                 .attr("height", Math.max(height - verticalSpacing, 0))
+        //                 .attr("x", stackBarXScale(x_val))
+        //                 .attr("y", barTopY - stackBarHeight + currentY)
+        //                 .style("fill", stackBarColorScale[index])
+        //                 .style("opacity", 0.75 - (index % 2) * 0.25)
 
-                    currentY -= height;
-                })
+        //             currentY -= height;
+        //         })
 
-            });
+        //     });
+
+        stackBarContentsSVG
+            .selectAll("g")
+            .data(series)
+            .join("g")
+            .attr("fill", (_, i) => stackBarColorScale[i])
+            .selectAll("rect")
+            .data(d => d)
+            // .enter()
+            // .append("rect")
+            // .attr("x", function (d) {
+            //     console.log(d);
+            //     console.log(d.data[x_category])
+            //     return stackBarXScale(d.data[x_category]);
+            // })
+            // .attr("y", function (d) {
+            //     console.log(d)
+            //     return stackBarYScale(d[1])
+            // })
+            // .attr("height", d => stackBarYScale(d[0]) - stackBarYScale(d[1]))
+            // .attr("width", d => stackBarXScale.bandwidth)
+            .join("rect")
+            // .enter()
+            // .append("rect")
+            .attr("x", function (d) {
+                console.log(d);
+                console.log(d.data[x_category])
+                return stackBarXScale(d.data[x_category]);
+            })
+            .attr("y", function (d) {
+                console.log(d)
+                return stackBarYScale(d[1])
+            })
+            .attr("height", d => stackBarYScale(d[0]) - stackBarYScale(d[1]))
+            .attr("width", stackBarXScale.bandwidth)
+        // .join("rect")
+        // .attr("x", d => stackBarXAxis(d[0]))
+        // .attr("y", d => stackBarYAxis(d[1]))
+        // .attr("height", d => stackBarYAxis(d[0]))
     }
 
-    param1_select.addEventListener("change", function () {
-        update_attributes(param1_select.value, param2_select.value);
-    });
-    param2_select.addEventListener("change", function () {
-        update_attributes(param1_select.value, param2_select.value);
-    });
+
+    /* Add left edge for x axis */
+    stackBarSvg.append("line")
+        .attr("x1", 0)
+        .attr("x2", 0)
+        .attr("y1", 0)
+        .attr("y2", stackBarHeight)
+        .attr("stroke", "#000000")
+        .attr("stroke-width", "2px")
+        .attr("class", "yAxisBoundary")
+
+    /* Add left edge for y axis */
+    stackBarSvg.append("line")
+        .attr("x1", 0)
+        .attr("x2", stackBarWidth)
+        .attr("y1", stackBarHeight)
+        .attr("y2", stackBarHeight)
+        .attr("stroke", "#000000")
+        .attr("stroke-width", "2px")
+        .attr("class", "yAxisBoundary")
+
+    param1_select.addEventListener("change", reload_attributes);
+    param2_select.addEventListener("change", reload_attributes);
+
+    reload_attributes();
 }
 
 buildGraph();
 
 const x_categories = ["Platform", "Genre"]
-const y_categories = ["Platform", "Genre", "Year"]
+const y_categories = ["Year", "Genre", "Platform"]
 
 
 var param1_select = document.getElementById("graph1param1");
