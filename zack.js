@@ -1,276 +1,220 @@
 const buildGraph = async () => {
-    const data = await d3.csv("games.csv");
-
-    blockbustersData = data;
-
-    console.log(blockbustersData)
-
-        // Part A (preprocessing data)
-
-        var minYear,
-            maxYear,
-            minRating,
-            maxRating,
-            minGross,
-            maxGross;
 
 
+    const game_data = await d3.csv("games.csv");
+    const bar_graph_data = await d3.json("stacked_bar_data.json");
 
-        // Format data for easy use
-        // blockbustersData.forEach(elem => {
-        //     // Worldwide Gross - Remove formatting and convert to float
-        //     let currency_string = elem["worldwide_gross"];
-        //     elem["worldwide_gross"] = parseFloat(currency_string.replace(/[^0-9\.]/g, ""));
-
-        //     // Length - Converting to Int
-        //     elem["length"] = parseInt(elem["length"]);
-
-        //     // Year - Convert to Number
-        //     elem["year"] = parseInt(elem["year"]);
-
-        //     // Rank - Convert to Number
-        //     elem["rank_in_year"] = parseInt(elem["rank_in_year"]);
-
-        //     // IMDB Rating - Convert to Number
-        //     elem["imdb_rating"] = parseFloat(elem["imdb_rating"])
-        // });
-
-        var genre_set = new Set([]);
-
-        // Remove any invalid data
-        // blockbustersData = blockbustersData.filter((elem, index) => {
-        //     let rating = elem["imdb_rating"],
-        //         genre = elem["Main_Genre"],
-        //         gross = elem["worldwide_gross"],
-        //         year = elem["year"],
-        //         length = elem["length"],
-        //         year_rank = elem["rank_in_year"];
-
-        //     /*  Remove movies with impossible worldwide_gross values
-        //         Avatar was highest ever with $2,787,965,087
-        //      */
-        //     if (gross > 2787965087 || gross <= 0) return false;
-
-        //     // Remove movies supposedly released outside of defined range
-        //     if (year < 1975 || year > 2018) return false;
-
-        //     // Remove movies with invalid length
-        //     if (isNaN(length)) return false;
-
-        //     // Remove movies with invalid rank
-        //     if (isNaN(year_rank) || year_rank < 1 || year_rank > 10) return false;
-
-        //     // Remove movies with invalid rating
-        //     if (isNaN(rating) || rating > 10 || rating < 0) return false;
-
-        //     // Calculate max and min values
-        //     if (!minYear || year < minYear) minYear = year;
-        //     if (!maxYear || year > maxYear) maxYear = year;
-
-        //     if (!minRating || rating < minRating) minRating = rating;
-        //     if (!maxRating || rating > maxRating) maxRating = rating;
-
-        //     if (!minGross || gross < minGross) minGross = gross;
-        //     if (!maxGross || gross > maxGross) maxGross = gross;
-
-        //     genre_set.add(genre)
-
-        //     return true;
-        // });
-
-        // Part B Scales and Axes
-
-        var svg = d3.select("svg#graphsvg")
-
-        let padding = {
-            top: 20,
-            right: 100,
-            bottom: 20,
-            left: 40
-        }
-
-        var width = svg.attr("width") - padding.right - padding.left;
-        var height = svg.attr("height") - padding.top - padding.bottom;
-
-        var graph =
-            svg.append("g")
-            .attr("transform", "translate(" + padding.left + "," + padding.top + ")");
-
-        // Round bounds for axes
-        minYear = 1980
-        maxYear = 2020 
-
-        var x = d3.scaleLinear()
-            .domain([minYear, maxYear])
-            .range([0, width]);
-        var y = d3.scaleLinear()
-            .domain([0, 50])
-            .range([height, 0]);
-
-        var xTickValues = [...Array((maxYear - minYear + 1)).keys()]
-            .map(x => x + minYear);
-
-        var xAxis =
-            graph.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x)
-                .tickSize(-height)
-                .tickValues(xTickValues)
-                .tickFormat(val => (val - minYear) % 5 == 0 ? val : "")
-            );
-
-        let divisor = 50000000
-
-        var yAxis =
-            graph.append("g")
-            .call(d3.axisRight(y)
-                .tickSize(width)
-                .ticks(10)
-                .tickFormat(val => val % 5 == 0 ? d3.format(",.2s")(val) : "")
-            );
-
-        xAxis.select(".domain").remove()
-        yAxis.select(".domain").remove()
-
-        xAxis.selectAll(".tick:not(:first-of-type) line").attr("stroke", "#777").attr('stroke-width',
-            '.25px')
-        xAxis.selectAll(".tick text").attr("y", 10).attr("dx", 0);
-
-        yAxis.selectAll(".tick:not(:first-of-type) line").attr("stroke", "#777").attr('stroke-width',
-            '.25px')
-        yAxis.selectAll(".tick text").attr("x", -30).attr("dy", 0);
+    /* Configure padding around graph */
+    let stackBarPadding = {
+        top: 100,
+        bottom: 100,
+        left: 100,
+        right: 100,
+        betweenLegend: -250
+    }
 
 
-        var ratingScale = d3.scalePow()
-            .exponent(4)
-            .domain([minRating, maxRating])
-            .range([3, 12]);
+    let stackBarContainerSvgWidth = 1200;
+    let stackBarContainerSvgHeight = 800;
+
+    let stackBarContainerSvg = d3.select("svg#stackedBar")
+        .attr("viewBox", "0 0 " + stackBarContainerSvgWidth + " " + stackBarContainerSvgHeight)
+        .classed("svg-content", true);
+
+    let stackBarWidth = stackBarContainerSvgWidth - stackBarPadding.left - stackBarPadding.right;
+    let stackBarHeight = stackBarContainerSvgHeight - stackBarPadding.top - stackBarPadding.bottom;
+
+    let stackBarSvg = stackBarContainerSvg.append("g")
+        .attr("transform", "translate(" + (stackBarContainerSvgWidth / 2.0 - stackBarWidth / 2.0) + "," + stackBarPadding.top + ")");
 
 
-        var genre_list = Array.from(genre_set);
-        let color_scale = ["#ff0029", "#377eb8", "#66a61e", "#984ea3", "#00d2d5", "#ff7f00", "#af8d00",
-            "#7f80cd", "#b3e900", "#c42e60", "#a65628", "#f781bf", "#8dd3c7", "#bebada", "#fb8072",
-            "#80b1d3"
-        ]
-        let color_dict = {};
 
-        for (let i = 0; i < genre_list.length; i++) {
-            color_dict[genre_list[i]] = color_scale[i];
-        }
 
-        let legend_height = 30;
+    /* Creating legend for colors */
+    // let stackBarLegendHeight = stackBarHeight / 4;
+    // let stackBarLegendWidth = 200;
+    // let stackBarLegendInset = 725;
 
-        blockbustersData.forEach(function (d, i) {
-            let xVal = Math.floor(x(d["Year"]));
-            let yVal = d["Global_Sales"];
-            let radius = 5
-            let genre = d["Main_Genre"];
-            let fill = color_dict[genre];
-            let circle = graph.append("circle")
-                .attr("r", radius)
-                .attr("standard-radius", radius)
-                .attr("cx", xVal)
-                .attr("cy", yVal)
-                .attr("opacity", 0.4)
-                .attr("class", genre)
-                .style("fill", fill);
+    /* Add SVG grouping element for legend */
+    // let stackBarLegend = stackBarSvg.append("g")
+    //     .attr("class", "legend")
+    //     .attr("width", stackBarLegendWidth)
+    //     .attr("height", stackBarLegendHeight)
+    //     .attr("transform", "translate(" + stackBarLegendInset + "," + (0) +
+    //         ")");
 
-            circle.on("mouseover", function () {
-                    let textElement = graph.append("text")
-                        .attr("x", xVal + 20)
-                        .attr("y", yVal + 20)
-                        .attr("id", "dataLabel")
-                        .attr("font-size", "25")
-                        .style("background-color", "red")
-                        .text(d["title"]);
+    /* Add an item for each category to the legend */
+    // stackBarTestNames.reverse().forEach((testName, index) => {
 
-                    circle.raise()
+    //     /* Adding SVG grouping element for each category */
+    //     let stackBarCurrentLegendItem = stackBarLegend.append("g")
+    //         .attr("class", "legend-item")
+    //         .attr("width", stackBarLegendWidth)
+    //         .attr("transform", "translate(0," +
+    //             (index * stackBarLegendHeight / (stackBarTestNames.length * 1.0)) +
+    //             ")");
 
-                    // enlarge circle
-                    circle.transition()
-                        .duration(100)
-                        .attr("opacity", 1.0)
-                        .attr("r", radius * 2)
+    //     /* Add rect sample color for category */
+    //     stackBarCurrentLegendItem.append("rect")
+    //         .attr("width", "20")
+    //         .attr("height", "20")
+    //         .attr("id", testName)
+    //         .style("fill", stackBarColorScale[Math.floor((stackBarTestNames.length - 1 - index) / 2.0)])
+    //         .style("opacity", 0.75 - (index % 2) * 0.25)
 
-                    d3.select("rect#" + genre).transition()
-                        .duration(100)
-                        .attr("width", 30)
+    //     /* Add description text for category */
+    //     stackBarCurrentLegendItem.append("text")
+    //         .text(stackBarTestKeyToFullNameDict[testName])
+    //         .attr("dx", "25")
+    //         .attr("dy", "15")
+    //         .attr("id", testName + "_label")
+    // });
 
-                    d3.select("text#" + genre + "_label").transition()
-                        .duration(100)
-                        .attr("dx", 35)
-                        .attr("font-weight", "bold")
 
-                    
+    function update_attributes(x_attr, y_attr) {
+        const x_category = x_attr;
+        const y_category = y_attr;
 
+        const data_key = x_category + "_" + y_category;
+        // console.log(data_key)
+
+        const graph_data = bar_graph_data[data_key];
+        // console.log(graph_data)
+
+        const x_vals = graph_data.map(x => x[0]);
+        // console.log(x_vals)
+
+        let stackBarXScale = d3.scaleBand()
+            .domain(x_vals)
+            .range([0, stackBarWidth])
+            .paddingInner(0.1)
+            .paddingOuter(0.02);
+
+        let stackBarYScale = d3.scaleLinear()
+            .domain([0, 1])
+            .range([stackBarHeight, 0]);
+
+        /* Create axis SVG components */
+        let stackBarXAxis = d3.axisBottom()
+            .scale(stackBarXScale)
+            .tickSize(-10)
+        let stackBarYAxis = d3.axisLeft()
+            .scale(stackBarYScale)
+            .tickSize(10)
+
+        /* Append axis SVG components to DOM */
+        let stackBarXAxisSVGComponent = stackBarSvg.append("g")
+            .attr("transform", "translate(0," + (stackBarHeight) + ")")
+            .attr("class", "x")
+            .call(stackBarXAxis)
+
+        let stackBarYAxisSVGComponent = stackBarSvg.append("g")
+            .attr("transform", "translate(0,0)")
+            .attr("class", "y")
+            .call(stackBarYAxis);
+
+        stackBarXAxisSVGComponent.selectAll(".tick line").attr("stroke", "#000000").attr("transform", "translate(0,10)")
+        stackBarXAxisSVGComponent.selectAll(".tick text").attr("y", 10).attr("dx", 0);
+
+
+        stackBarYAxisSVGComponent.selectAll(".tick:not(first-of-type) line")
+            .attr("stroke", "#000000")
+            .attr('stroke-width', '2px')
+            .attr("transform", "translate(0,-0.5)")
+        stackBarYAxisSVGComponent.selectAll(".tick text").attr("y", 0).attr("dx", 0);
+
+        /* Add left edge for x axis */
+        stackBarSvg.append("line")
+            .attr("x1", 0)
+            .attr("x2", 0)
+            .attr("y1", 0)
+            .attr("y2", stackBarHeight)
+            .attr("stroke", "#000000")
+            .attr("stroke-width", "2px")
+            .attr("class", "yAxisBoundary")
+
+        /* Add left edge for y axis */
+        stackBarSvg.append("line")
+            .attr("x1", 0)
+            .attr("x2", stackBarWidth)
+            .attr("y1", stackBarHeight)
+            .attr("y2", stackBarHeight)
+            .attr("stroke", "#000000")
+            .attr("stroke-width", "2px")
+            .attr("class", "yAxisBoundary")
+
+
+        /* Add axes labels */
+        stackBarContainerSvg.append("text").
+        attr("transform", "translate(" + (stackBarPadding.left + stackBarWidth / 2.0) + "," + (stackBarPadding.top + stackBarHeight + stackBarPadding.bottom / 2.0) + ")")
+            .style("text-anchor", "middle")
+            .attr("class", "axesLabel")
+            .text("Year")
+        stackBarContainerSvg.append("text")
+            .attr("transform", "translate(" + (stackBarPadding.left / 2.0 - 10) + "," + (stackBarHeight / 2.0 + stackBarPadding.top) + ")rotate(270)")
+            .style("text-anchor", "middle")
+            .attr("class", "axesLabel")
+            .text("Percentage In Category")
+
+
+        // Remove domain components garbage
+        d3.selectAll("path.domain").remove();
+
+        /* Add Data to graph */
+        let stackBarColorScale = d3.schemeCategory10;
+        let verticalSpacing = 1;
+
+        graph_data
+            .forEach((x_category) => {
+                x_val = x_category[0];
+                b_counts = x_category[1];
+
+                var currentY = stackBarHeight;
+
+                b_counts.forEach((b_category, index) => {
+                    category_name = b_category[0];
+                    subcategory_count = b_category[1];
+                    let barTopY = stackBarYScale(subcategory_count);
+                    let height = stackBarHeight - barTopY;
+                    stackBarSvg.append("rect")
+                        .attr("width", stackBarXScale.bandwidth)
+                        .attr("height", Math.max(height - verticalSpacing, 0))
+                        .attr("x", stackBarXScale(x_val))
+                        .attr("y", barTopY - stackBarHeight + currentY)
+                        .style("fill", stackBarColorScale[index])
+                        .style("opacity", 0.75 - (index % 2) * 0.25)
+
+                    currentY -= height;
                 })
-                .on("mouseout", function () {
-                    document.getElementById("dataLabel").remove();
 
-                    // shrink circle to original size
-                    circle.transition()
-                        .duration(100)
-                        .attr("r", radius)
-                        .attr("opacity", 0.4)
+            });
+    }
 
-                    d3.select("rect#" + genre).transition()
-                        .duration(100)
-                        .attr("width", 20)
-
-                    d3.select("text#" + genre + "_label").transition()
-                        .duration(100)
-                        .attr("dx", 25)
-                        .attr("font-weight", "normal")
-                });
-        });
-
-        var legend = svg.append("g")
-            .attr("class", "legend")
-            .attr("width", width)
-            .attr("height", padding.bottom)
-            .attr("transform", "translate(" + (padding.left + width + 5) + "," + (padding.top) +
-                ")");
-
-        genre_list.forEach((genre, index) => {
-            let current_item = legend.append("g")
-                .attr("class", "legend-item")
-                .attr("width", width / (genre_set.size * 1.0))
-                .attr("transform", "translate(0," +
-                    (index * height / (genre_set.size * 1.0)) +
-                    ")");
-
-
-            current_item.append("rect")
-                .attr("width", "20")
-                .attr("height", "20")
-                .attr("id", genre_list[index])
-                .style("fill", color_scale[index])
-                .on("mouseover", function () {
-                    let genre_circles = d3.selectAll("circle." + genre);
-                    genre_circles.call(d => {
-                        d.transition()
-                            .duration(100)
-                            .attr("r", d.attr("standard-radius") * 4.0);
-                    })
-                })
-                .on("mouseout", function () {
-                    let genre_circles = d3.selectAll("circle." + genre);
-                    genre_circles.call(d => {
-                        d.transition()
-                            .duration(100)
-                            .attr("r", d.attr("standard-radius"));
-                    })
-                });
-
-            current_item.append("text")
-                .text(genre)
-                .attr("dx", "25")
-                .attr("dy", "15")
-                .attr("font-size", "10")
-                .attr("font-family", "Arial")
-                .attr("id", genre_list[index] + "_label")
-
-        })
+    param1_select.addEventListener("change", function () {
+        update_attributes(param1_select.value, param2_select.value);
+    });
+    param2_select.addEventListener("change", function () {
+        update_attributes(param1_select.value, param2_select.value);
+    });
 }
 
 buildGraph();
+
+const x_categories = ["Platform", "Genre"]
+const y_categories = ["Platform", "Genre", "Year"]
+
+
+var param1_select = document.getElementById("graph1param1");
+var param2_select = document.getElementById("graph1param2");
+
+x_categories.forEach(category => {
+    const option = document.createElement("option");
+    option.text = category;
+    param1_select.add(option);
+})
+
+y_categories.forEach(category => {
+    const option = document.createElement("option");
+    option.text = category;
+    param2_select.add(option);
+})
