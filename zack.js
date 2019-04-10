@@ -157,7 +157,11 @@ const buildGraph = async () => {
         d3.selectAll("path.domain").remove();
 
         /* Add Data to graph */
-        let stackBarColorScale = d3.schemeCategory10;
+        // let stackBarColorScale = d3.schemeCategory10;
+        let stackBarColorScale = ["#ff0029", "#377eb8", "#66a61e", "#984ea3", "#00d2d5", "#ff7f00", "#af8d00",
+            "#7f80cd", "#b3e900", "#c42e60", "#a65628", "#f781bf", "#8dd3c7", "#bebada", "#fb8072",
+            "#80b1d3"
+        ]
         let verticalSpacing = 1;
 
         // graph_data

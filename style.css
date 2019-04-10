@@ -2,11 +2,18 @@ svg {
     border: 1px solid black;
 }
 
-.search { 
-    padding:6px 15px 6px 30px;
-    margin:3px; 
-    background: url('search.png') no-repeat 8px 6px; 
-    border-radius:15px; 
-    -moz-border-radius:15px; 
-    -webkit-border-radius:15px; 
+.search {
+    padding: 6px 15px 6px 30px;
+    margin: 3px;
+    background: url('search.png') no-repeat 8px 6px;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+}
+
+.horizontal-container {
+    flex-direction: row;
+    margin-left: 50px;
+    margin-right: 50px;
+    align-items: center;
 }
