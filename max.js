@@ -110,7 +110,7 @@ const startup = async () => {
         const num_layers = 3;
         const max_per_layer = 7;
 
-        added = {};
+        added = [];
 
         add_similar(game_id, num_layers);
 
@@ -122,8 +122,7 @@ const startup = async () => {
             // i += 1;
             game_data = id_to_data[game_id];
             // console.log(game_data)
-            if (game_data && !added.hasOwnProperty(game_id)) {
-                added[game_id] = undefined;
+            if (game_data) { // && !added.includes(game_id)
                 nodes.push(Object.create({
                     id: game_id,
                     name: id_to_data[game_id]["name"]
@@ -140,11 +139,11 @@ const startup = async () => {
                     console.log(game_data["name"])
                     similar_games = game_data["similar_games"].filter(d => {
                         let key_in = d in id_to_data;
-                        let not_already_added = !added.hasOwnProperty(d)
+                        let not_already_added = !added.includes(d)
                         let truth_val = key_in && not_already_added;
 
                         console.log(added)
-                        console.log("d_type: " + typeof(d) + " d:'" + String(d) + "' key_in:" + String(key_in) + " not_already_in:" + String(not_already_added));
+                        console.log("d_type: " + typeof (d) + " d:'" + String(d) + "' key_in:" + String(key_in) + " not_already_in:" + String(not_already_added));
                         return truth_val;
                     });
                     console.log(similar_games)
@@ -154,6 +153,7 @@ const startup = async () => {
                             source: game_id,
                             target: d
                         }));
+                        added.push(d);
                     })
                     similar_games.forEach(d => add_similar(d, level - 1));
                 }
