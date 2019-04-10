@@ -1,14 +1,16 @@
 //this first part is just code I found online to get an idea of what to do
 
 // set the dimensions and margins of the graph
+
+const svg = d3.select("svg#graph");
 var margin = {
         top: 10,
-        right: 30,
-        bottom: 30,
-        left: 40
+        right: 10,
+        bottom: 10,
+        left: 10
     },
-    width = 400 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    width = svg.attr("width") - margin.left - margin.right,
+    height = svg.attr("height") - margin.top - margin.bottom;
 
 
 const getNetwork = async () => {
@@ -22,8 +24,6 @@ const getNetwork = async () => {
         .force("link", d3.forceLink(links).id(d => d.id))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
-
-    const svg = d3.select("svg#graph");
 
     const link = svg.append("g")
         .attr("stroke", "#999")
@@ -109,14 +109,14 @@ getNetwork();
 
 
 var options = {
-    keys: ['title'],
-    id: 'title'
+    keys: ['name'],
+    id: 'name'
 };
 
 
 const getInput = async () => {
 
-    const data = await d3.json("testSearch.json");
+    const data = await d3.json("scraped_data_reformated.json");
 
     var fuse = new Fuse(data, options)
     console.log(fuse.search("old"))
