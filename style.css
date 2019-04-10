@@ -1,3 +1,12 @@
 svg {
     border: 1px solid black;
 }
+
+.search { 
+    padding:6px 15px 6px 30px;
+    margin:3px; 
+    background: url('search.png') no-repeat 8px 6px; 
+    border-radius:15px; 
+    -moz-border-radius:15px; 
+    -webkit-border-radius:15px; 
+}

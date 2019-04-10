@@ -17,6 +17,8 @@ var margin = {
 
 const startup = async () => {
 
+    var dataList = document.getElementById('datalist');
+
     var options = {
         keys: ['name'],
         id: 'id'
@@ -30,15 +32,64 @@ const startup = async () => {
 
     var body = d3.select('body')
 
-    d3.select("input#textInput")
-        .on("input", function () {
+    var input = d3.select("input#textInput");
+
+    input.on("keypress", function () {
             titleSearch(this.value);
+            console.log(this.value)
+            console.log("input")
+        })
+        .on("change", function (d, i) {
+            console.log("change")
+            console.log(this)
+            console.log(this.game_id)
+            let result_text = this.value;
+            let game_id = results_dict[result_text];
+
+            update_force_graph(game_id)
         });
 
+    function removeOptions() {
+
+        while (dataList.firstChild) {
+            dataList.removeChild(dataList.firstChild);
+        }
+    }
+
+    var results_dict = {}
+
     function titleSearch(title) {
-        const results = fuse.search(title);
-        console.log(id_to_data[results[0]])
-        update_force_graph(results[0]);
+        const results = fuse.search(title).slice(0, 10);
+        const titles = results.map(id => id_to_data[id]);
+        console.log(titles)
+
+        results_dict = {}
+        removeOptions();
+
+        titles.forEach(function (item) {
+            // Create a new <option> element.
+
+            let result_text = item["name"] // + " --- " + item["platform"] + " --- " +  item["year"] 
+            results_dict[result_text] = item["id"]
+
+            d3.select(dataList)
+                .append("option")
+                .attr("value", result_text)
+                .attr("game_id", item["id"])
+            // .on("select", console.log("hi"))
+
+            // var option = document.createElement('option');
+            // // Set the value using the item in the JSON array.
+            // option.value = item;
+            // option.attr("onclick", function(d) {
+            //     console.log("hi")
+            // }) 
+            // // Add the <option> element to the <datalist>.
+            // dataList.appendChild(option);
+        });
+
+
+        // update_force_graph(results[0]);
     }
 
 
@@ -53,8 +104,8 @@ const startup = async () => {
 
 
     var simulation = d3.forceSimulation(nodes)
-        .force("charge", d3.forceManyBody().strength(-1000))
-        .force("link", d3.forceLink(links).distance(100).id(d => d.id))
+        .force("charge", d3.forceManyBody().strength(-500))
+        .force("link", d3.forceLink(links).distance(50).id(d => d.id))
         .force("x", d3.forceX())
         .force("y", d3.forceY())
         // .force("radial", d3.forceRadial().radius(d => {
@@ -67,6 +118,8 @@ const startup = async () => {
     var g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")"),
         link = g.append("g").attr("stroke", "#000").attr("stroke-width", 1.5).selectAll(".link"),
         node = g.append("g").attr("stroke", "#fff").attr("stroke-width", 1.5).selectAll(".node");
+
+
 
     // d3.timeout(function () {
     //     links.push({
@@ -111,7 +164,7 @@ const startup = async () => {
         nodes = []
         links = []
 
-        const num_layers = 3;
+        const num_layers = 4;
         const max_per_layer = 7;
 
         added = [game_id];
@@ -200,8 +253,12 @@ const startup = async () => {
             })
             .call(drag(simulation))
             .merge(node)
+            .attr("cursor", "pointer")
             .on("mouseover", function (d, i) {
                 console.log(d.name)
+            })
+            .on("click", function (d, i) {
+                console.log("Clicked")
             });
 
         // Apply the general update pattern to the links.
