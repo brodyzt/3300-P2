@@ -15,65 +15,92 @@ const getNetwork = async () => {
 
     const data = await d3.json("testNodes.json");
 
-    let svg = d3.select("svg#graph")
+    const links = data.links.map(d => Object.create(d));
+    const nodes = data.nodes.map(d => Object.create(d));
 
-        // Initialize the links
-        var link = svg
-            .selectAll("line")
-            .data(data.links)
-            .enter()
-            .append("line")
-            .style("stroke", "#aaa")
+    const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id))
+        .force("charge", d3.forceManyBody())
+        .force("center", d3.forceCenter(width / 2, height / 2));
 
-    // Initialize the nodes
-    var node = svg
+    const svg = d3.select("svg#graph");
+
+    const link = svg.append("g")
+        .attr("stroke", "#999")
+        .attr("stroke-opacity", 0.6)
+        .selectAll("line")
+        .data(links)
+        .join("line")
+        .attr("stroke-width", d => Math.sqrt(d.value));
+
+
+    const node = svg.append("g")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 2)
         .selectAll("circle")
-        .data(data.nodes)
-        .enter()
-        .append("circle")
-        .attr("r", 20)
-        .style("fill", "#69b3a2")
+        .data(nodes)
+        .join("circle")
+        .attr("r", 5)
+        // .call(d3.drag()
+        //     // .on("start", function (d) {
+        //     //     if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        //     //     d.fx = d.x;
+        //     //     d.fy = d.y;
+        //     // })
+        //     // .on("drag", function (d) {
+        //     //     d.fx = d3.event.x;
+        //     //     d.fy = d3.event.y;
+        //     // })
+        //     .on("end", d => {
+        //         if (!d3.event.active) simulation.alphaTarget(0);
+        //         d.fx = null;
+        //         d.fy = null;
+        //     })
+        //     (simulation));
+        .call(drag(simulation));
+    
+    function drag(simulation) {
+        function dragstarted(d) {
+            if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+          }
+          
+          function dragged(d) {
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
+          }
+          
+          function dragended(d) {
+            if (!d3.event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+          }
+          
+          return d3.drag()
+              .on("start", dragstarted)
+              .on("drag", dragged)
+              .on("end", dragended);
+    }
 
-    console.log(node)
+    node.append("title")
+        .text(d => d.id);
 
-    // Let's list the force we wanna apply on the network
-    var simulation = d3.forceSimulation(data.nodes) // Force algorithm is applied to data.nodes
-        .force("link", d3.forceLink() // This force provides links between nodes
-            .id(function (d) {
-                return d.id;
-            }) // This provide  the id of a node
-            .links(data.links) // and this the list of links
-        )
-        .force("charge", d3.forceManyBody().strength(-
-            400)) // This adds repulsion between nodes. Play with the -400 for the repulsion strength
-        .force("center", d3.forceCenter(width / 2, height /
-            2)) // This force attracts nodes to the center of the svg area
-        .on("end", ticked);
-
-    // This function is run at each iteration of the force algorithm, updating the nodes position.
-    function ticked() {
+    simulation.on("tick", () => {
         link
-            .attr("x1", function (d) {
-                return d.source.x;
-            })
-            .attr("y1", function (d) {
-                return d.source.y;
-            })
-            .attr("x2", function (d) {
-                return d.target.x;
-            })
-            .attr("y2", function (d) {
-                return d.target.y;
-            });
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
 
         node
-            .attr("cx", function (d) {
-                return d.x + 6;
-            })
-            .attr("cy", function (d) {
-                return d.y - 6;
-            });
-    }
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
+    });
+
+    invalidation.then(() => simulation.stop());
+
+    return svg.node();
 
 };
 

@@ -211,12 +211,12 @@ const buildGraph = async () => {
             .transition()
             .duration(500)
             .attr("x", function (d) {
-                console.log(d);
-                console.log(d.data[x_category])
+                // console.log(d);
+                // console.log(d.data[x_category])
                 return stackBarXScale(d.data[x_category]);
             })
             .attr("y", function (d) {
-                console.log(d)
+                // console.log(d)
                 return stackBarYScale(d[1])
             })
             .attr("height", d => stackBarYScale(d[0]) - stackBarYScale(d[1]))
