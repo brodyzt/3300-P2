@@ -108,10 +108,18 @@ const startup = async () => {
 
         empty_info_box();
 
-        let attributes = ["name", "genre", "platforms", "summary"]
+        let attributes = ["name", "genre", "platforms", "url", "summary"]
         attributes.forEach(d => {
-            game_info_box.append("div")
-                .text(id_to_data[game_id][d])
+            if (d == "url") {
+                game_info_box.append("div")
+                    .append("a")
+                    .text(id_to_data[game_id][d])
+                    .attr("href", id_to_data[game_id][d])
+                    .attr("target", "_blank")
+            } else {
+                game_info_box.append("div")
+                    .text(id_to_data[game_id][d])
+            }
         })
     }
 
@@ -297,7 +305,7 @@ const startup = async () => {
             })
             .on("mouseout", function (d, i) {
                 label.text("")
-                empty_info_box();
+                update_info_box(game_id);
             })
             .on("click", function (d, i) {
                 console.log("Clicked")
@@ -315,6 +323,9 @@ const startup = async () => {
         simulation.nodes(nodes);
         simulation.force("link").links(links);
         simulation.alpha(1).restart();
+
+        
+        update_info_box(game_id);
     }
 
     function dragstarted(d) {
