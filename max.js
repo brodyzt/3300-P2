@@ -100,6 +100,8 @@ const startup = async () => {
     //     restart();
     // }, 2000, d3.now() + 1000);
 
+    var added;
+
     function update_force_graph(game_id) {
 
         nodes = []
@@ -108,25 +110,46 @@ const startup = async () => {
         const num_layers = 3;
         const max_per_layer = 7;
 
-        let added = new Set();
+        added = {};
 
         add_similar(game_id, num_layers);
 
+        // let i = 0;
+
         function add_similar(game_id, level) {
-            // console.log(game_id)
+            game_id = parseInt(game_id);
+            // console.log("I: " + String(i) + " level: " + level)
+            // i += 1;
             game_data = id_to_data[game_id];
-            console.log(game_data)
-            if (game_data && !(game_id in added)) {
-                added.add(game_id)
+            // console.log(game_data)
+            if (game_data && !added.hasOwnProperty(game_id)) {
+                added[game_id] = undefined;
                 nodes.push(Object.create({
                     id: game_id,
                     name: id_to_data[game_id]["name"]
                 }))
 
-                if (level - 1 > 0) {
-                    similar_games = game_data["similar_games"].filter(d => d in id_to_data).filter(d => !(d in added));
+
+                // console.log("Added:")
+                // console.log(added)
+                nodes.forEach(d => {
+                    // console.log(d.name)
+                })
+
+                if (level - 1 > 0 && "similar_games" in game_data) {
+                    console.log(game_data["name"])
+                    similar_games = game_data["similar_games"].filter(d => {
+                        let key_in = d in id_to_data;
+                        let not_already_added = !added.hasOwnProperty(d)
+                        let truth_val = key_in && not_already_added;
+
+                        console.log(added)
+                        console.log("d_type: " + typeof(d) + " d:'" + String(d) + "' key_in:" + String(key_in) + " not_already_in:" + String(not_already_added));
+                        return truth_val;
+                    });
                     console.log(similar_games)
                     similar_games.forEach(d => {
+                        console.log("Adding: " + id_to_data[game_id]["name"] + "---" + id_to_data[d]["name"] + " connection")
                         links.push(Object.create({
                             source: game_id,
                             target: d
