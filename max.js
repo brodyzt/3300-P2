@@ -1,76 +1,89 @@
-<!DOCTYPE html>
-<html>
-<title>CS3300 Project 1</title><head>
-<script src="https://d3js.org/d3.v5.min.js"> </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.4.4/fuse.min.js"></script>
-</head>
-<body>
-
-<svg id = "graph" height = "800" width = "800" style="background: #sff; margin-top:50px"></svg>
-<script>
-
 //this first part is just code I found online to get an idea of what to do
 
 // set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 30, left: 40},
-  width = 400 - margin.left - margin.right,
-  height = 400 - margin.top - margin.bottom;
+var margin = {
+        top: 10,
+        right: 30,
+        bottom: 30,
+        left: 40
+    },
+    width = 400 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
 
 
 const getNetwork = async () => {
 
     const data = await d3.json("testNodes.json");
 
-      // Initialize the links
-      var link = svg
-        .selectAll("line")
-        .data(data.links)
-        .enter()
-        .append("line")
-          .style("stroke", "#aaa")
+    let svg = d3.select("svg#graph")
 
-      // Initialize the nodes
-      var node = svg
+        // Initialize the links
+        var link = svg
+            .selectAll("line")
+            .data(data.links)
+            .enter()
+            .append("line")
+            .style("stroke", "#aaa")
+
+    // Initialize the nodes
+    var node = svg
         .selectAll("circle")
         .data(data.nodes)
         .enter()
         .append("circle")
-          .attr("r", 20)
-          .style("fill", "#69b3a2")
+        .attr("r", 20)
+        .style("fill", "#69b3a2")
 
-      // Let's list the force we wanna apply on the network
-      var simulation = d3.forceSimulation(data.nodes)                 // Force algorithm is applied to data.nodes
-          .force("link", d3.forceLink()                               // This force provides links between nodes
-                .id(function(d) { return d.id; })                     // This provide  the id of a node
-                .links(data.links)                                    // and this the list of links
-          )
-          .force("charge", d3.forceManyBody().strength(-400))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
-          .force("center", d3.forceCenter(width / 2, height / 2))     // This force attracts nodes to the center of the svg area
-          .on("end", ticked);
+    console.log(node)
 
-      // This function is run at each iteration of the force algorithm, updating the nodes position.
-      function ticked() {
+    // Let's list the force we wanna apply on the network
+    var simulation = d3.forceSimulation(data.nodes) // Force algorithm is applied to data.nodes
+        .force("link", d3.forceLink() // This force provides links between nodes
+            .id(function (d) {
+                return d.id;
+            }) // This provide  the id of a node
+            .links(data.links) // and this the list of links
+        )
+        .force("charge", d3.forceManyBody().strength(-
+            400)) // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+        .force("center", d3.forceCenter(width / 2, height /
+            2)) // This force attracts nodes to the center of the svg area
+        .on("end", ticked);
+
+    // This function is run at each iteration of the force algorithm, updating the nodes position.
+    function ticked() {
         link
-            .attr("x1", function(d) { return d.source.x; })
-            .attr("y1", function(d) { return d.source.y; })
-            .attr("x2", function(d) { return d.target.x; })
-            .attr("y2", function(d) { return d.target.y; });
+            .attr("x1", function (d) {
+                return d.source.x;
+            })
+            .attr("y1", function (d) {
+                return d.source.y;
+            })
+            .attr("x2", function (d) {
+                return d.target.x;
+            })
+            .attr("y2", function (d) {
+                return d.target.y;
+            });
 
         node
-             .attr("cx", function (d) { return d.x+6; })
-             .attr("cy", function(d) { return d.y-6; });
-      }
+            .attr("cx", function (d) {
+                return d.x + 6;
+            })
+            .attr("cy", function (d) {
+                return d.y - 6;
+            });
+    }
 
-  };
+};
 
 getNetwork();
 
 
 
 var options = {
-  keys: ['title'],
-  id: 'title'
+    keys: ['title'],
+    id: 'title'
 };
 
 
@@ -84,16 +97,16 @@ const getInput = async () => {
     var body = d3.select('body')
 
     body.append('input')
-        .attr('type','text')
-        .attr('name','textInput')
-        .on("input", function(){
-          titleSearch(this.value);
+        .attr('type', 'text')
+        .attr('name', 'textInput')
+        .on("input", function () {
+            titleSearch(this.value);
         });
 
-  function titleSearch(title){
-    console.log(fuse.search(title));
-  }
-  };
+    function titleSearch(title) {
+        console.log(fuse.search(title));
+    }
+};
 
 getInput();
 
@@ -210,13 +223,3 @@ getInput();
 
  requestData();
 */
-
-
-
-</script>
-
-
-
-
-</body>
-</html>
