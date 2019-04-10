@@ -259,6 +259,7 @@ const startup = async () => {
             })
             .on("click", function (d, i) {
                 console.log("Clicked")
+                update_force_graph(d.id)
             });
 
         // Apply the general update pattern to the links.
