@@ -17,12 +17,20 @@ const buildGraph = async () => {
     let stackBarContainerSvgWidth = 1200;
     let stackBarContainerSvgHeight = 800;
 
+    
+    let stackBarWidth = stackBarContainerSvgWidth - stackBarPadding.left - stackBarPadding.right;
+    let stackBarHeight = stackBarContainerSvgHeight - stackBarPadding.top - stackBarPadding.bottom;
+    
     let stackBarContainerSvg = d3.select("svg#stackedBar")
         .attr("viewBox", "0 0 " + stackBarContainerSvgWidth + " " + stackBarContainerSvgHeight)
         .classed("svg-content", true);
+   
+    stackBarContainerSvg.append("text")
+    .attr("transform", "translate(" + (stackBarPadding.left + stackBarWidth / 2.0) + "," + (stackBarPadding.top + stackBarHeight + stackBarPadding.bottom / 2.0) + ")")
+        .style("text-anchor", "middle")
+        .attr("class", "axesLabel")
+        .text("Year");
 
-    let stackBarWidth = stackBarContainerSvgWidth - stackBarPadding.left - stackBarPadding.right;
-    let stackBarHeight = stackBarContainerSvgHeight - stackBarPadding.top - stackBarPadding.bottom;
 
     let stackBarSvg = stackBarContainerSvg.append("g")
         .attr("transform", "translate(" + (stackBarContainerSvgWidth / 2.0 - stackBarWidth / 2.0) + "," + stackBarPadding.top + ")");
@@ -77,6 +85,10 @@ const buildGraph = async () => {
     function reload_attributes() {
         const x_category = param2_select.value;
         const y_category = param1_select.value;
+        
+          if (x_category == y_category) {
+          return;
+        }
 
         const data_key = y_category + "_" + x_category;
         // console.log(data_key)
@@ -141,11 +153,8 @@ const buildGraph = async () => {
 
 
         /* Add axes labels */
-        stackBarContainerSvg.append("text").
-        attr("transform", "translate(" + (stackBarPadding.left + stackBarWidth / 2.0) + "," + (stackBarPadding.top + stackBarHeight + stackBarPadding.bottom / 2.0) + ")")
-            .style("text-anchor", "middle")
-            .attr("class", "axesLabel")
-            .text("Year")
+        stackBarContainerSvg.select("text").text(x_category);
+        
         stackBarContainerSvg.append("text")
             .attr("transform", "translate(" + (stackBarPadding.left / 2.0 - 10) + "," + (stackBarHeight / 2.0 + stackBarPadding.top) + ")rotate(270)")
             .style("text-anchor", "middle")
