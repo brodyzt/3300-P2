@@ -54,10 +54,14 @@ const startup = async () => {
 
     var simulation = d3.forceSimulation(nodes)
         .force("charge", d3.forceManyBody().strength(-1000))
-        .force("link", d3.forceLink(links).distance(200).id(d => d.id))
+        .force("link", d3.forceLink(links).distance(100).id(d => d.id))
         .force("x", d3.forceX())
         .force("y", d3.forceY())
-        .alphaTarget(1)
+        // .force("radial", d3.forceRadial().radius(d => {
+        //     return 80 * d.level 
+        // }).x(width / 2.0).y(height / 2.0).strength(10))
+        .force("center", d3.forceCenter())
+        // .alphaTarget(1)
         .on("tick", ticked);
 
     var g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")"),
@@ -110,7 +114,7 @@ const startup = async () => {
         const num_layers = 3;
         const max_per_layer = 7;
 
-        added = [];
+        added = [game_id];
 
         add_similar(game_id, num_layers);
 
@@ -125,7 +129,8 @@ const startup = async () => {
             if (game_data) { // && !added.includes(game_id)
                 nodes.push(Object.create({
                     id: game_id,
-                    name: id_to_data[game_id]["name"]
+                    name: id_to_data[game_id]["name"],
+                    level: level
                 }))
 
 
@@ -179,13 +184,20 @@ const startup = async () => {
         // }))
 
         // Apply the general update pattern to the nodes.
+
+        const default_radius = 15;
+
         node = node.data(nodes, function (d) {
             return d.id;
         });
         node.exit().remove();
         node = node.enter().append("circle").attr("fill", function (d) {
                 return color(d.id);
-            }).attr("r", 8)
+            })
+            .attr("r", d => {
+                if (d.id == game_id) return default_radius * 2.0;
+                else return default_radius;
+            })
             .call(drag(simulation))
             .merge(node)
             .on("mouseover", function (d, i) {
