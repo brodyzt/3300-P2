@@ -208,6 +208,8 @@ const buildGraph = async () => {
             .join("rect")
             // .enter()
             // .append("rect")
+            .transition()
+            .duration(500)
             .attr("x", function (d) {
                 console.log(d);
                 console.log(d.data[x_category])
@@ -254,8 +256,8 @@ const buildGraph = async () => {
 
 buildGraph();
 
-const x_categories = ["Platform", "Genre"]
-const y_categories = ["Year", "Genre", "Platform"]
+const x_categories = ["Platform", "Publisher", "Genre"]
+const y_categories = ["Year", "Publisher", "Genre", "Platform"]
 
 
 var param1_select = document.getElementById("graph1param1");
