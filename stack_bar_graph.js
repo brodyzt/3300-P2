@@ -106,8 +106,8 @@ const buildGraph = async () => {
         let stackBarXScale = d3.scaleBand()
             .domain(x_vals)
             .range([0, stackBarWidth])
-            .paddingInner(0.1)
-            .paddingOuter(0.02);
+            .paddingInner(0.25)
+            .paddingOuter(0.25);
 
         let stackBarYScale = d3.scaleLinear()
             .domain([0, 1])
@@ -216,10 +216,12 @@ const buildGraph = async () => {
             .selectAll("rect")
             .data(d => d)
             .join("rect")
-            .attr("class", function(d,i) {
+            .attr("class", function (d, i) {
                 console.log(d["category"])
                 return d["category"];
             })
+            .on("mouseover", d => mouseOverCategory(d["category"]))
+            .on("mouseout", d => mouseOutCategory(d["category"]))
             .transition()
             .duration(500)
             .attr("x", function (d) {
@@ -233,18 +235,62 @@ const buildGraph = async () => {
             })
             .attr("height", d => stackBarYScale(d[0]) - stackBarYScale(d[1]))
             .attr("width", stackBarXScale.bandwidth)
+            .attr("opacity", 0.8)
         // .join("rect")
         // .attr("x", d => stackBarXAxis(d[0]))
         // .attr("y", d => stackBarYAxis(d[1]))
         // .attr("height", d => stackBarYAxis(d[0]))
 
 
+        function mouseOverCategory(category) {
+            d3.select("rect#" + category)
+                .transition()
+                .duration(100)
+                .attr("width", 30)
+                .attr("opacity", 1)
+
+            d3.select("text#" + category)
+                .transition()
+                .duration(100)
+                .attr("dx", 35)
+                .attr("font-weight", "bold")
+
+            console.log(stackBarXScale)
+            console.log(stackBarXScale.bandwidth)
+            d3.selectAll("rect." + category)
+                .transition()
+                .duration(100)
+                .attr("width", stackBarXScale.bandwidth() + 10)
+                .attr("transform", "translate(-5,0)")
+                .attr("opacity", 1);
+        }
+
+        function mouseOutCategory(category) {
+            d3.select("rect#" + category)
+                .transition()
+                .duration(100)
+                .attr("width", 20)
+                .attr("opacity", 0.8)
+
+            d3.select("text#" + category)
+                .transition()
+                .duration(100)
+                .attr("dx", 25)
+                .attr("font-weight", "normal")
+
+            d3.selectAll("rect." + category)
+                .transition()
+                .duration(100)
+                .attr("width", stackBarXScale.bandwidth())
+                .attr("transform", "translate(0,0)")
+                .attr("opacity", .8);
+        }
 
         // add legend
 
         console.log(series)
 
-        
+
         let stackBarLegendHeight = stackBarHeight / 4;
         let stackBarLegendWidth = stackBarPadding.legendWidth;
         let stackBarLegendInset = 1400 - stackBarLegendWidth;
@@ -258,7 +304,7 @@ const buildGraph = async () => {
                 ")");
 
 
-        columns.forEach((genre, index) => {
+        columns.forEach((column_val, index) => {
 
             console.log(stackBarHeight)
             console.log(index)
@@ -266,6 +312,7 @@ const buildGraph = async () => {
             let current_item = legend.append("g")
                 .attr("class", "legend-item")
                 .attr("width", width / (series.length * 1.0))
+                .attr("id", column_val)
                 .attr("transform", "translate(0," +
                     (legendYOffset + index * stackBarHeight / (series.length * 2.0)) +
                     ")");
@@ -274,32 +321,19 @@ const buildGraph = async () => {
             current_item.append("rect")
                 .attr("width", "20")
                 .attr("height", "20")
-                .attr("id", genre)
+                .attr("id", column_val)
+                .attr("opacity", 0.8)
                 .style("fill", stackBarColorScale[index])
-                .on("mouseover", function () {
-                    let genre_circles = d3.selectAll("circle." + genre);
-                    genre_circles.call(d => {
-                        d.transition()
-                            .duration(100)
-                            .attr("r", d.attr("standard-radius") * 4.0);
-                    })
-                })
-                .on("mouseout", function () {
-                    let genre_circles = d3.selectAll("circle." + genre);
-                    genre_circles.call(d => {
-                        d.transition()
-                            .duration(100)
-                            .attr("r", d.attr("standard-radius"));
-                    })
-                });
+                .on("mouseover", () => mouseOverCategory(column_val))
+                .on("mouseout", () => mouseOutCategory(column_val));
 
             current_item.append("text")
-                .text(genre)
+                .text(column_val)
                 .attr("dx", "25")
                 .attr("dy", "15")
                 .attr("font-size", "10")
                 .attr("font-family", "Arial")
-                .attr("id", series[index] + "_label")
+                .attr("id", column_val)
 
         })
     }
