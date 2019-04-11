@@ -26,6 +26,7 @@ const startup = async () => {
 
     const fuse_data = await d3.json("fuse.json");
     const id_to_data = await d3.json("id_to_data.json");
+    const genre_data = await d3.json("genres_data.json");
 
     var fuse = new Fuse(fuse_data, options)
     console.log(fuse.search("old"))
@@ -122,6 +123,12 @@ const startup = async () => {
         //     }
         // })
 
+        
+        // add image
+        game_info_box.append("div")
+            .attr("class", "mdc-card__media mdc-card__media--16-9 demo-card__media")
+            .style("background-image", "url(sample.jpg)")
+
         // Add title
         game_info_box.append("div")
             .attr("class", "demo-card__primary")
@@ -140,8 +147,33 @@ const startup = async () => {
             .attr("class", "mdc-chip")
             .append("div")
             .attr("class", "mdc-chip__text")
-            .text(d)
+            .text(genre_data[d]["name"])
         })
+
+        // Add Summary
+        chip_div.append("div")
+            .attr("class", "demo-card__secondary mdc-typography mdc-typography--body2")
+            .text(id_to_data[game_id]["summary"])
+
+        // Add Buttons
+        let action_button_div = game_info_box.append("div")
+            .attr("class", "mdc-card__actions")
+            .append("div")
+            .attr("class", "mdc-card__action-buttons")
+            .attr("style", "text-align:center; margin: auto;")
+            .append("a")
+            .attr("href", id_to_data[game_id]["url"])
+            .attr("target", "_blank")
+            .append("button")
+            .attr("class", "mdc-button mdc-button--raised")
+            .text("View Game on IGDB")
+
+    //     <div class="mdc-card__actions">
+            // <div class="mdc-card__action-buttons">
+            //   <button class="mdc-button mdc-card__action mdc-card__action--button">Read</button>
+            //   <button class="mdc-button mdc-card__action mdc-card__action--button">Bookmark</button>
+    // </div>
+
 
         //         <div class="mdc-card demo-card demo-basic-with-header">
         //   <div class="demo-card__primary">

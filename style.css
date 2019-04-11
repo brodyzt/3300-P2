@@ -21,6 +21,7 @@ svg {
 
 .game-info-class {
     flex-grow: 1; 
+    padding: 20px;
 }
 
 h2 {
