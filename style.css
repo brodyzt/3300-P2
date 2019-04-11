@@ -35,7 +35,8 @@ svg {
 
 #stacked-bar-container text {
     color: white;
-    fill: white
+    fill: white;
+    padding-right: -50px;
 }
 
 .tick line {
@@ -95,6 +96,10 @@ h2 {
     text-align: center;
 }
 
+h1 {
+    text-align: center;
+}
+
 /* Chip Set Styling */
 
 .mdc-chip-set>div {
@@ -127,8 +132,9 @@ h2 {
     margin-right: auto;
     width: 75%;
     font-family: tron;
-    font-size: 70px;
+    font-size: 75px;
     color: #6FC3DF;
+    text-shadow: 0 0 10px #fff
 }
 
 .graph-title {
@@ -186,6 +192,14 @@ body {
 }
 
 .param-containter {
-    justify-content: center;
+  justify-content: center;
+}
 
+.relation-finder {
+  color: white;
+  text-align: center;
+  font-family: tron;
+  font-size: 45px;
+  color: #66ff66;
+  text-shadow: 0 0 10px #fff
 }
