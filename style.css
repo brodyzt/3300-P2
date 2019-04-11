@@ -11,11 +11,7 @@ body>div {
 #stacked-bar-container>svg {
     border-radius: 20px;
     border: 1px solid #66ff66;
-
-    box-shadow: 0px 11px 15px -7px rgba(102, 255, 102, 0.2),
-        0px 24px 38px 3px rgba(102, 255, 102, 0.14),
-        0px 9px 46px 8px rgba(102, 255, 102, .12);
-    /* 0px 3px 19px 0px #66ff6680; */
+    box-shadow: 0px 3px 19px 0px #66ff6680;
 }
 
 
@@ -45,13 +41,13 @@ body>div {
 }
 
 #stacked-bar-container text {
-    color: black;
-    fill: black;
+    color: white;
+    fill: white;
     padding-right: -50px;
 }
 
 .tick line {
-    stroke: black;
+    stroke: white;
 }
 
 #force-graph-container {
@@ -71,6 +67,10 @@ body>div {
     background-color: black;
     border: 1px solid #db80fe;
     box-shadow: 0px 3px 19px 0px #db80fe80;
+}
+
+#game-info > div {
+    padding: 4px;
 }
 
 /* #game-info>div:nth-child(n+1) {
@@ -159,11 +159,11 @@ h1 {
 }
 
 body {
-    background-color: white;
+    background-color: black;
 }
 
 .link {
-    stroke: black;
+    stroke: white;
 }
 
 #textInput {
@@ -171,7 +171,7 @@ body {
     margin-bottom: 50px;
     width: 500px;
     height: 70px;
-    color: black;
+    color: white;
     font-size: 20px;
     text-indent: 30px;
     text-emphasis-color: black;
@@ -200,9 +200,7 @@ body {
     background-repeat: no-repeat;
     background-position: 2px 3px;
     background-size: 10px 10px;
-    box-shadow: 0px 11px 15px -7px rgba(102, 255, 102, 0.2),
-        0px 24px 38px 3px rgba(102, 255, 102, 0.14),
-        0px 9px 46px 8px rgba(102, 255, 102, 0.12);
+    box-shadow: 0px 3px 19px 0px #66ff6680;
 
 }
 
@@ -211,10 +209,14 @@ body {
 }
 
 .relation-finder {
-    color: white;
-    text-align: center;
-    font-family: tron;
-    font-size: 45px;
-    color: #66ff66;
-    /* text-shadow: 0 0 10px #fff */
+  color: white;
+  text-align: center;
+  font-family: tron;
+  font-size: 45px;
+  color: #66ff66;
+  /* text-shadow: 0 0 10px #fff */
+}
+
+.summary-box {
+    font-size: 17px;
 }

@@ -35,7 +35,6 @@ const startup = async () => {
     var body = d3.select('body')
 
     var input = d3.select("input#textInput");
-    var label = svg.append("text").attr("id", "label");
 
     input.on("keypress", function () {
             titleSearch(this.value);
@@ -66,27 +65,15 @@ const startup = async () => {
         titles.forEach(function (item) {
             // Create a new <option> element.
 
-            let result_text = item["name"] // + " --- " + item["platform"] + " --- " +  item["year"]
+            let result_text = item["name"]
             results_dict[result_text] = item["id"]
 
             d3.select(dataList)
                 .append("option")
                 .attr("value", result_text)
                 .attr("game_id", item["id"])
-            // .on("select", console.log("hi"))
-
-            // var option = document.createElement('option');
-            // // Set the value using the item in the JSON array.
-            // option.value = item;
-            // option.attr("onclick", function(d) {
-            //     console.log("hi")
-            // })
-            // // Add the <option> element to the <datalist>.
-            // dataList.appendChild(option);
         });
 
-
-        // update_force_graph(results[0]);
     }
 
     /////////////////////////////////////////////////////////////////
@@ -101,33 +88,7 @@ const startup = async () => {
     function update_info_box(game_id) {
         if (is_dragging) return;
 
-        // while (game_info_box.firstChild) {
-        //     game_info_box.removeChild(dataList.firstChild);
-        // }
-
         empty_info_box();
-
-        // let attributes = ["name", "genre", "platforms", "url", "summary"]
-        // attributes.forEach(d => {
-        //     if (d == "url") {
-        //         game_info_box.append("div")
-        //             .append("a")
-        //             .text(id_to_data[game_id][d])
-        //             .attr("href", id_to_data[game_id][d])
-        //             .attr("target", "_blank")
-        //     } else {
-        //         game_info_box.append("div")
-        //             .text(id_to_data[game_id][d])
-        //     }
-        // })
-
-        console.log(id_to_data[game_id]["name"])
-
-        // add image
-        // game_info_box.append("div")
-        //     .attr("class", "mdc-card__media mdc-card__media--16-9 demo-card__media")
-        //     .style("background-image", "url(sample.jpg)")
-        //     .style("border-radius", "10px")
 
         // Add title
         game_info_box.append("div")
@@ -181,31 +142,36 @@ const startup = async () => {
             .text("Platforms")
             .attr("style", "margin-right:10px;")
 
-        let platforms = id_to_data[game_id]["platforms"];
-        platforms.forEach(d => {
-            platform_chip_div.append("div")
-                .attr("class", "mdc-chip")
-                .append("div")
-                .attr("class", "mdc-chip__text")
-                .text(platform_data[d]["name"])
-                .on("mouseover", function () {
-                    console.log("Platform_" + d)
-                    let circles = d3.selectAll("circle." + "Platform_" + d);
-                    circles.transition()
-                        .duration(200)
-                        .attr("r", function () {
-                            return d3.select(this).attr("original_radius") * 1.5
-                        })
-                })
-                .on("mouseout", function () {
-                    let circles = d3.selectAll("circle." + "Platform_" + d);
-                    circles.transition()
-                        .duration(200)
-                        .attr("r", function () {
-                            return d3.select(this).attr("original_radius")
-                        })
-                })
-        })
+        if ("platforms" in id_to_data[game_id]) {
+            let platforms = id_to_data[game_id]["platforms"];
+            platforms.forEach(d => {
+                platform_chip_div.append("div")
+                    .attr("class", "mdc-chip")
+                    .append("div")
+                    .attr("class", "mdc-chip__text")
+                    .text(platform_data[d]["name"])
+                    .on("mouseover", function () {
+                        let circles = d3.selectAll("circle." + "Platform_" + d);
+                        circles.transition()
+                            .duration(200)
+                            .attr("r", function () {
+                                return d3.select(this).attr("original_radius") * 1.5
+                            })
+                    })
+                    .on("mouseout", function () {
+                        let circles = d3.selectAll("circle." + "Platform_" + d);
+                        circles.transition()
+                            .duration(200)
+                            .attr("r", function () {
+                                return d3.select(this).attr("original_radius")
+                            })
+                    })
+            })
+        } else {
+            platform_chip_div.append("span")
+                .text("None found")
+        }
+
 
         game_info_box.append("hr")
 
@@ -216,15 +182,31 @@ const startup = async () => {
             .attr("style", "margin-right:10px;")
 
         rating_div.append("span")
-            .text(String(Math.round(id_to_data[game_id]["rating"])) + "%")
+            .text(function () {
+                if ("rating" in id_to_data[game_id]) {
+                    let raw_rating = id_to_data[game_id]["rating"]
+                    return String(Math.round(raw_rating)) + "%"
+                } else {
+                    return "Not Found"
+                }
+            })
             .attr("style", "margin-right:10px;")
 
         game_info_box.append("hr")
 
         // Add Summary
         game_info_box.append("div")
-            .attr("class", "demo-card__secondary mdc-typography mdc-typography--body2")
+            .attr("class", "demo-card__secondary mdc-typography mdc-typography--body2 summary-box")
             .text(id_to_data[game_id]["summary"])
+
+        game_info_box.append("hr")
+
+
+        // Add Videos
+        let rating_div = game_info_box.append("div")
+        rating_div.append("span")
+            .text("Gameplay Videos:")
+
 
         // Add Buttons
         let action_button_div = game_info_box.append("div")
@@ -238,38 +220,6 @@ const startup = async () => {
             .append("button")
             .attr("class", "mdc-button mdc-button--raised")
             .text("View Game on IGDB")
-
-        //     <div class="mdc-card__actions">
-        // <div class="mdc-card__action-buttons">
-        //   <button class="mdc-button mdc-card__action mdc-card__action--button">Read</button>
-        //   <button class="mdc-button mdc-card__action mdc-card__action--button">Bookmark</button>
-        // </div>
-
-
-        //         <div class="mdc-card demo-card demo-basic-with-header">
-        //   <div class="demo-card__primary">
-        //     <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Our Changing Planet</h2>
-        //     <h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">by Kurt Wagner</h3>
-        //   </div>
-        //   <div class="mdc-card__primary-action demo-card__primary-action" tabindex="0">
-        //     <div class="mdc-card__media mdc-card__media--16-9 demo-card__media" style="background-image: url(&quot;https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg&quot;);"></div>
-        //     <div class="demo-card__secondary mdc-typography mdc-typography--body2">Visit ten places on our planet that are undergoing the biggest changes today.</div>
-        //   </div>
-        //   <div class="mdc-card__actions">
-        //     <div class="mdc-card__action-buttons">
-        //       <button class="mdc-button mdc-card__action mdc-card__action--button">Read</button>
-        //       <button class="mdc-button mdc-card__action mdc-card__action--button">Bookmark</button>
-        //     </div>
-        //     <div class="mdc-card__action-icons">
-        //       <button class="mdc-icon-button mdc-card__action mdc-card__action--icon--unbounded" aria-pressed="false" aria-label="Add to favorites" title="Add to favorites">
-        //         <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">favorite</i>
-        //         <i class="material-icons mdc-icon-button__icon">favorite_border</i>
-        //       </button>
-        //       <button class="mdc-icon-button material-icons mdc-card__action mdc-card__action--icon--unbounded" title="Share" data-mdc-ripple-is-unbounded="true">share</button>
-        //       <button class="mdc-icon-button material-icons mdc-card__action mdc-card__action--icon--unbounded" title="More options" data-mdc-ripple-is-unbounded="true">more_vert</button>
-        //     </div>
-        //   </div>
-        // </div>
     }
 
 
@@ -289,54 +239,12 @@ const startup = async () => {
         .force("link", d3.forceLink(links).distance(75).id(d => d.id))
         .force("x", d3.forceX())
         .force("y", d3.forceY())
-        // .force("radial", d3.forceRadial().radius(d => {
-        //     return 80 * d.level
-        // }).x(width / 2.0).y(height / 2.0).strength(10))
         .force("center", d3.forceCenter())
-        // .alphaTarget(1)
         .on("tick", ticked);
 
     var g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")"),
         link = g.append("g").attr("stroke", "#000").attr("stroke-width", 1.5).selectAll(".link"),
         node = g.append("g").attr("stroke", "#fff").attr("stroke-width", 1.5).selectAll(".node");
-
-
-
-    // d3.timeout(function () {
-    //     links.push({
-    //         source: a,
-    //         target: b
-    //     }); // Add a-b.
-    //     links.push({
-    //         source: b,
-    //         target: c
-    //     }); // Add b-c.
-    //     links.push({
-    //         source: c,
-    //         target: a
-    //     }); // Add c-a.
-    //     restart();
-    // }, 1000);
-
-    // d3.interval(function () {
-    //     nodes.pop(); // Remove c.
-    //     links.pop(); // Remove c-a.
-    //     links.pop(); // Remove b-c.
-    //     restart();
-    // }, 2000, d3.now());
-
-    // d3.interval(function () {
-    //     nodes.push(c); // Re-add c.
-    //     links.push({
-    //         source: b,
-    //         target: c
-    //     }); // Re-add b-c.
-    //     links.push({
-    //         source: c,
-    //         target: a
-    //     }); // Re-add c-a.
-    //     restart();
-    // }, 2000, d3.now() + 1000);
 
     var added;
 
@@ -356,23 +264,14 @@ const startup = async () => {
 
         function add_similar(game_id, level) {
             game_id = parseInt(game_id);
-            // console.log("I: " + String(i) + " level: " + level)
-            // i += 1;
             game_data = id_to_data[game_id];
-            // console.log(game_data)
-            if (game_data) { // && !added.includes(game_id)
+
+            if (game_data) {
                 nodes.push(Object.create({
                     id: game_id,
                     name: id_to_data[game_id]["name"],
                     level: level
                 }))
-
-
-                // console.log("Added:")
-                // console.log(added)
-                nodes.forEach(d => {
-                    // console.log(d.name)
-                })
 
                 if (level - 1 > 0 && "similar_games" in game_data) {
                     similar_games = game_data["similar_games"].filter(d => {
@@ -394,29 +293,13 @@ const startup = async () => {
             }
         }
 
-        // nodes = similar_game_ids.filter(d => d in id_to_data).map(d => {
-        //     console.log("This: " + id_to_data[d]["name"]);
-        //     return Object.create({
-
-        //     })
-        // });
-        // nodes.push(Object.create({
-        //     id: game_id,
-        //     name: id_to_data[game_id]["name"]
-        // }));
-        // links = similar_game_ids.filter(d => d in id_to_data).map(d => Object.create({
-        //     source: game_id,
-        //     target: d
-        // }))
 
         // Apply the general update pattern to the nodes.
-
         const default_radius = 15;
         let drag = d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
             .on("end", dragended)
-        // label = d3.select(label);
 
         node = node.data(nodes, function (d) {
             return d.id;
@@ -426,46 +309,51 @@ const startup = async () => {
         let rating_scale = d3.scalePow()
             .exponent(4)
             .domain([0, 100])
-            .range([1, 30]);
+            .range([5, 30]);
 
         node = node.enter().append("circle")
-            // .attr("r", d => {
-            //     if (d.id == game_id) return default_radius * 2.0;
-            //     else return default_radius;
-            // })
             .call(drag)
             .merge(node)
             .attr("fill", function (d) {
-                return d.id == game_id ? "black" : color(d.id);
+                return d.id == game_id ? "white" : color(id_to_data[d.id]["genres"][0]);
             })
             .attr("r", function (d) {
-
-                return rating_scale(id_to_data[d.id].rating)
-                // return id_to_data[d.id].rating / 100.0 * 30;
+                if ("rating" in id_to_data[d.id]) {
+                    return rating_scale(id_to_data[d.id].rating)
+                } else {
+                    return 20;
+                }
             })
-            .attr("original_radius", d => rating_scale(id_to_data[d.id].rating))
+            .attr("original_radius", function (d) {
+                if ("rating" in id_to_data[d.id]) {
+                    return rating_scale(id_to_data[d.id].rating)
+                } else {
+                    return 20;
+                }
+            })
             .attr("cursor", "pointer")
             .attr("class", node => {
                 let class_string = "";
 
-                let genre_classes = id_to_data[node.id].genres.map(d => "Genre_" + d).join(" ")
-                class_string = class_string + genre_classes;
+                if ("genres" in id_to_data[node.id]) {
+                    let genre_classes = id_to_data[node.id].genres.map(d => "Genre_" + d).join(" ")
+                    class_string = class_string + genre_classes;
 
-                class_string = class_string + " ";
+                    class_string = class_string + " ";
+                }
 
-                let platform_classes = id_to_data[node.id].platforms.map(d => "Platform_" + d).join(" ")
-                class_string = class_string + platform_classes;
+                if ("platforms" in id_to_data[node.id]) {
+                    let platform_classes = id_to_data[node.id].platforms.map(d => "Platform_" + d).join(" ")
+                    class_string = class_string + platform_classes;
+                }
 
                 return class_string;
             })
             .on("mouseover", function (d, i) {
                 let self = d3.select(this)
-                label.text(d.name);
                 update_info_box(d.id)
-                label.attr("x", parseInt(self.attr("cx")) + width / 2.0 + 20).attr("y", parseInt(self.attr("cy")) + height / 2.0 - 20);
             })
             .on("mouseout", function (d, i) {
-                label.text("")
                 update_info_box(game_id);
             })
             .on("click", function (d, i) {
@@ -494,14 +382,11 @@ const startup = async () => {
         if (!d3.event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
         d.fy = d.y;
-        label.text(d.name);
-        label.attr("x", d3.event.x + width / 2.0 + 20).attr("y", d3.event.y + height / 2.0 - 20);
     }
 
     function dragged(d) {
         d.fx = d3.event.x;
         d.fy = d3.event.y;
-        label.attr("x", d3.event.x + width / 2.0 + 20).attr("y", d3.event.y + height / 2.0 - 20);
     }
 
     function dragended(d) {
@@ -509,7 +394,6 @@ const startup = async () => {
         if (!d3.event.active) simulation.alphaTarget(0);
         d.fx = null;
         d.fy = null;
-        label.text("");
     }
 
 
