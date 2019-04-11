@@ -7,11 +7,18 @@ body>div {
     margin-bottom: 100px;
 }
 
-svg {
+
+#stacked-bar-container > svg {
+    border-radius: 20px;
+    border: 1px solid #66ff66;
+    box-shadow: 0px 3px 19px 0px #66ff6680;
+}
+
+
+#force-graph-container > svg {
     border-radius: 20px;
     border: 1px solid #6FC3DF;
-    box-shadow: 0px 3px 19px 0px rgba(223, 247, 69, 0.5);
-
+    box-shadow: 0px 3px 19px 0px #6FC3DF80;
 }
 
 
@@ -134,7 +141,7 @@ h1 {
     font-family: tron;
     font-size: 75px;
     color: #6FC3DF;
-    text-shadow: 0 0 10px #fff
+    /* text-shadow: 0 0 10px #fff */
 }
 
 .graph-title {
@@ -166,6 +173,7 @@ body {
     text-emphasis-color: white;
     padding: 6px 15px 6px 30px;
     border-radius: 30px;
+    border-color: #6FC3DF;
     -moz-border-radius: 30px;
     -webkit-border-radius: 30px;
 
@@ -173,7 +181,7 @@ body {
     background-repeat: no-repeat;
     background-position: 15px 15px;
     background-size: 40px 40px;
-    box-shadow: 0px 3px 19px 0px rgba(255, 255, 255, 0.5);
+    box-shadow: 0px 3px 19px 0px #6FC3DF80;
 }
 
 .params {
@@ -183,11 +191,12 @@ body {
     font-size: 30px;
     margin: 10;
     border-radius: 10px;
+    border-color: #43b443;
     text-align-last: center;
     background-repeat: no-repeat;
     background-position: 2px 3px;
     background-size: 10px 10px;
-    box-shadow: 0px 3px 19px 0px rgba(255, 255, 255, 0.5);
+    box-shadow: 0px 3px 19px 0px #43b44380;
 
 }
 
@@ -201,5 +210,5 @@ body {
   font-family: tron;
   font-size: 45px;
   color: #66ff66;
-  text-shadow: 0 0 10px #fff
+  /* text-shadow: 0 0 10px #fff */
 }
