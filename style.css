@@ -69,6 +69,10 @@ body>div {
     box-shadow: 0px 3px 19px 0px #db80fe80;
 }
 
+#game-info > div {
+    padding: 4px;
+}
+
 /* #game-info>div:nth-child(n+1) {
     margin-top: 20px;
 } */
@@ -211,4 +215,8 @@ body {
   font-size: 45px;
   color: #66ff66;
   /* text-shadow: 0 0 10px #fff */
+}
+
+.summary-box {
+    font-size: 17px;
 }
