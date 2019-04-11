@@ -10,6 +10,7 @@ const buildGraph = async () => {
         bottom: 100,
         left: 150,
         right: 25,
+        legendPadding: 50,
         legendWidth: 250
     }
 
@@ -18,7 +19,7 @@ const buildGraph = async () => {
     let stackBarContainerSvgHeight = 700;
 
 
-    let stackBarWidth = stackBarContainerSvgWidth - stackBarPadding.left - stackBarPadding.right - stackBarPadding.legendWidth;
+    let stackBarWidth = stackBarContainerSvgWidth - stackBarPadding.left - stackBarPadding.right - stackBarPadding.legendWidth - stackBarPadding.legendPadding;
     let stackBarHeight = stackBarContainerSvgHeight - stackBarPadding.top - stackBarPadding.bottom;
 
     let stackBarContainerSvg = d3.select("svg#stackedBar")
@@ -432,7 +433,7 @@ const buildGraph = async () => {
 
     let stackBarLegendHeight = stackBarHeight / 4;
     let stackBarLegendWidth = stackBarPadding.legendWidth;
-    let stackBarLegendInset = 1000 - stackBarLegendWidth;
+    let stackBarLegendInset = 1400 - stackBarLegendWidth;
 
     /* Add left edge for x axis */
     stackBarSvg.append("line")
