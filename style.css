@@ -3,9 +3,13 @@
     src: url(Tr2n.TTF);
 }
 
+body>div {
+    margin-bottom: 100px;
+}
+
 svg {
     border-radius: 20px;
-    border: 1px solid #dff745;
+    border: 1px solid #6FC3DF;
     box-shadow: 0px 3px 19px 0px rgba(223, 247, 69, 0.5);
 
 }
@@ -34,6 +38,10 @@ svg {
     fill: white
 }
 
+.tick line {
+    stroke: white;
+}
+
 #force-graph-container {
     flex-grow: 0;
 }
@@ -49,12 +57,16 @@ svg {
     flex-direction: column;
     border-radius: 20px;
     background-color: black;
-    border: 1px solid #43F7DD;
+    border: 1px solid #6FC3DF;
     box-shadow: 0px 3px 19px 0px rgba(67, 247, 221, 0.5);
 }
 
-#game-info>div:nth-child(n+1) {
+/* #game-info>div:nth-child(n+1) {
     margin-top: 20px;
+} */
+
+*:focus {
+    outline: none;
 }
 
 #game-info div {
@@ -62,6 +74,8 @@ svg {
 }
 
 #game-info hr {
+    margin-top: 20px;
+    margin-bottom: 20px;
     background-color: gray;
     width: 80%;
     opacity: .2;
@@ -72,7 +86,10 @@ svg {
     color: white;
 }
 
-#game-info button {}
+#game-info button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
 
 h2 {
     text-align: center;
@@ -81,7 +98,7 @@ h2 {
 /* Chip Set Styling */
 
 .mdc-chip-set>div {
-    background: #43F7DD;
+    background: #6FC3DF;
 }
 
 .mdc-chip__text {
@@ -114,6 +131,16 @@ h2 {
     color: #6FC3DF;
 }
 
+.graph-title {
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+    font-family: tron;
+    font-size: 50px;
+    color: #6FC3DF;
+}
+
 body {
     background-color: black;
 }
@@ -140,25 +167,24 @@ body {
     background-position: 2px 3px;
     background-size: 10px 10px;
     box-shadow: 0px 3px 19px 0px rgba(255, 255, 255, 0.5);
-
 }
 
 .params {
-  background: black;
-  color: lightgrey;
-  padding: 10px;
-  font-size: 30px;
-  margin: 10;
-  border-radius: 10px;
-  text-align-last: center;
-  background-repeat: no-repeat;
-  background-position: 2px 3px;
-  background-size: 10px 10px;
-  box-shadow: 0px 3px 15px 0px rgba(255, 255, 255, 0.5);
+    background: black;
+    color: lightgrey;
+    padding: 10px;
+    font-size: 30px;
+    margin: 10;
+    border-radius: 10px;
+    text-align-last: center;
+    background-repeat: no-repeat;
+    background-position: 2px 3px;
+    background-size: 10px 10px;
+    box-shadow: 0px 3px 19px 0px rgba(255, 255, 255, 0.5);
 
 }
 
 .param-containter {
-  justify-content: center;
+    justify-content: center;
 
 }

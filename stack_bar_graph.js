@@ -8,9 +8,9 @@ const buildGraph = async () => {
     let stackBarPadding = {
         top: 100,
         bottom: 100,
-        left: 100,
-        right: 100,
-        legendWidth: 200
+        left: 150,
+        right: 25,
+        legendWidth: 250
     }
 
 
@@ -26,7 +26,7 @@ const buildGraph = async () => {
         .classed("svg-content", true);
 
     stackBarContainerSvg.append("text")
-        .attr("transform", "translate(" + (stackBarPadding.left + stackBarWidth / 2.0) + "," + (stackBarPadding.top + stackBarHeight + stackBarPadding.bottom / 2.0) + ")")
+        .attr("transform", "translate(" + (stackBarPadding.left + stackBarWidth / 2.0) + "," + (stackBarPadding.top + stackBarHeight + stackBarPadding.bottom / 2.0 + 20) + ")")
         .style("text-anchor", "middle")
         .attr("class", "axesLabel")
         .text("Year")
@@ -122,6 +122,10 @@ const buildGraph = async () => {
         let stackBarYAxis = d3.axisLeft()
             .scale(stackBarYScale)
             .tickSize(10)
+            .tickFormat(d => {
+                d = d * 100;
+                return String(d) + "%"
+            })
 
         // console.log(graph_data[0]["keys"])
 
@@ -154,14 +158,14 @@ const buildGraph = async () => {
             .call(stackBarYAxis);
 
         stackBarXAxisSVGComponent.selectAll(".tick line").attr("stroke", "#000000").attr("transform", "translate(0,10)")
-        stackBarXAxisSVGComponent.selectAll(".tick text").attr("y", 10).attr("dx", 0);
+        stackBarXAxisSVGComponent.selectAll(".tick text").attr("y", 20).attr("dx", 0).attr("font-size", "20px");
 
 
         stackBarYAxisSVGComponent.selectAll(".tick:not(first-of-type) line")
             .attr("stroke", "#000000")
             .attr('stroke-width', '2px')
             .attr("transform", "translate(0,-0.5)")
-        stackBarYAxisSVGComponent.selectAll(".tick text").attr("y", 0).attr("dx", 0);
+        stackBarYAxisSVGComponent.selectAll(".tick text").attr("y", 0).attr("dx", -5).attr("font-size", "20px");
 
 
         /* Add axes labels */
@@ -361,6 +365,13 @@ const buildGraph = async () => {
                     .on("mouseout", column_val => mouseOutCategory("_" + column_val.replace(/\ /g, "")))
             })
 
+        console.log("Size:")
+        console.log(180)
+        console.log(x_vals.length)
+        console.log( String(180.0 / x_vals.length) + "px")
+        stackBarXAxisSVGComponent.selectAll(".tick text").attr("y", 20).attr("dx", 0).attr("font-size", "10px");
+
+
 
         // columns.reverse().forEach((column_val, index) => {
 
@@ -432,7 +443,7 @@ const buildGraph = async () => {
         .attr("x2", 0)
         .attr("y1", 0)
         .attr("y2", stackBarHeight)
-        .attr("stroke", "#000000")
+        .attr("stroke", "#ffffff")
         .attr("stroke-width", "2px")
         .attr("class", "yAxisBoundary")
 
@@ -442,7 +453,7 @@ const buildGraph = async () => {
         .attr("x2", stackBarWidth)
         .attr("y1", stackBarHeight)
         .attr("y2", stackBarHeight)
-        .attr("stroke", "#000000")
+        .attr("stroke", "#ffffff")
         .attr("stroke-width", "2px")
         .attr("class", "yAxisBoundary")
 

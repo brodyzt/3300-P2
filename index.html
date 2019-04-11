@@ -20,25 +20,31 @@
 <body>
 
     <h2 id="title"> Video Games and Platform Popularity </h2>
-<div class="vertical-container">
-    <div class="horizontal-container" style="margin-top:25px; margin-bottom:50px">
-        <div id="stacked-bar-container">
-            <svg width="1400" height="700" id="stackedBar"></svg>
+
+    <div class="vertical-container">
+        <h2 class="graph-title">Game Market Breakdown</h2>
+        <div class="horizontal-container">
+            <div class="horizontal-container" style="margin-top:25px; margin-bottom:50px">
+                <div id="stacked-bar-container">
+                    <svg width="1400" height="700" id="stackedBar"></svg>
+                </div>
+            </div>
+            <div class="param-container vertical-container">
+                <select class="params" id="graph1param1"></select>
+                <span style="color:white; font-size: 30px">vs.</span>
+                <select class="params" id="graph1param2"></select>
+            </div>
         </div>
     </div>
-    <div class="param-container">
-      <select class="params" id="graph1param1"></select>
-      <select class="params" id="graph1param2"></select>
-    </div>
-  </div>
-<br>
+    <br>
 
     <script src="stack_bar_graph.js"></script>
 
     <div class="vertical-container">
+        <h2 class="graph-title">Game Similarity Network</h2>
         <div class="horizontal-container">
             <div id="force-graph-container">
-                <svg id="force-graph" height="700" width="1200" style="background: #sff"></svg>
+                <svg id="force-graph" height="700" width="1000" style="background: #sff"></svg>
             </div>
             <div id="game-info" width="100%" class="mdc-card demo-card demo-basic-with-header"
                 style="justify-content: center">

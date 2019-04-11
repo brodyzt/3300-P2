@@ -99,7 +99,7 @@ const startup = async () => {
     }
 
     function update_info_box(game_id) {
-        if(is_dragging) return;
+        if (is_dragging) return;
 
         // while (game_info_box.firstChild) {
         //     game_info_box.removeChild(dataList.firstChild);
@@ -153,6 +153,22 @@ const startup = async () => {
                 .append("div")
                 .attr("class", "mdc-chip__text")
                 .text(genre_data[d]["name"])
+                .on("mouseover", function () {
+                    let circles = d3.selectAll("circle." + "Genre_" + d);
+                    circles.transition()
+                        .duration(200)
+                        .attr("r", function () {
+                            return d3.select(this).attr("original_radius") * 1.5
+                        })
+                })
+                .on("mouseout", function () {
+                    let circles = d3.selectAll("circle." + "Genre_" + d);
+                    circles.transition()
+                        .duration(200)
+                        .attr("r", function () {
+                            return d3.select(this).attr("original_radius")
+                        })
+                })
         })
 
         game_info_box.append("hr")
@@ -171,7 +187,36 @@ const startup = async () => {
                 .append("div")
                 .attr("class", "mdc-chip__text")
                 .text(platform_data[d]["name"])
+                .on("mouseover", function () {
+                    console.log("Platform_" + d)
+                    let circles = d3.selectAll("circle." + "Platform_" + d);
+                    circles.transition()
+                        .duration(200)
+                        .attr("r", function () {
+                            return d3.select(this).attr("original_radius") * 1.5
+                        })
+                })
+                .on("mouseout", function () {
+                    let circles = d3.selectAll("circle." + "Platform_" + d);
+                    circles.transition()
+                        .duration(200)
+                        .attr("r", function () {
+                            return d3.select(this).attr("original_radius")
+                        })
+                })
         })
+
+        game_info_box.append("hr")
+
+        let rating_div = game_info_box.append("div")
+
+        rating_div.append("span")
+            .text("Rating: ")
+            .attr("style", "margin-right:10px;")
+
+        rating_div.append("span")
+            .text(String(Math.round(id_to_data[game_id]["rating"])) + "%")
+            .attr("style", "margin-right:10px;")
 
         game_info_box.append("hr")
 
@@ -376,17 +421,42 @@ const startup = async () => {
             return d.id;
         });
         node.exit().remove();
-        node = node.enter().append("circle").attr("fill", function (d) {
-                return color(d.id);
-            })
+
+        let rating_scale = d3.scalePow()
+            .exponent(4)
+            .domain([0, 100])
+            .range([1, 30]);
+
+        node = node.enter().append("circle")
             // .attr("r", d => {
             //     if (d.id == game_id) return default_radius * 2.0;
             //     else return default_radius;
             // })
             .call(drag)
             .merge(node)
-            .attr("r", d => d.id == game_id ? default_radius * 3.0 : default_radius)
+            .attr("fill", function (d) {
+                return d.id == game_id ? "white" : color(d.id);
+            })
+            .attr("r", function (d) {
+
+                return rating_scale(id_to_data[d.id].rating)
+                // return id_to_data[d.id].rating / 100.0 * 30;
+            })
+            .attr("original_radius", d => rating_scale(id_to_data[d.id].rating))
             .attr("cursor", "pointer")
+            .attr("class", node => {
+                let class_string = "";
+
+                let genre_classes = id_to_data[node.id].genres.map(d => "Genre_" + d).join(" ")
+                class_string = class_string + genre_classes;
+
+                class_string = class_string + " ";
+
+                let platform_classes = id_to_data[node.id].platforms.map(d => "Platform_" + d).join(" ")
+                class_string = class_string + platform_classes;
+
+                return class_string;
+            })
             .on("mouseover", function (d, i) {
                 let self = d3.select(this)
                 label.text(d.name);
