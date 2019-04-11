@@ -19,11 +19,11 @@ const startup = async () => {
     };
 
     /* load datasets */
-    const fuse_data = await d3.json("fuse.json");
-    const id_to_data = await d3.json("id_to_data.json");
-    const genre_data = await d3.json("genres_data.json");
-    const platform_data = await d3.json("platforms_data.json");
-    const videos_data = await d3.json("videos_data.json");
+    const fuse_data = await d3.json("Datasets/fuse.json");
+    const id_to_data = await d3.json("Datasets/id_to_data.json");
+    const genre_data = await d3.json("Datasets/genres_data.json");
+    const platform_data = await d3.json("Datasets/platforms_data.json");
+    const videos_data = await d3.json("Datasets/videos_data.json");
 
     /* initialize fuze library used to search datasets */
     var fuse = new Fuse(fuse_data, options)

@@ -1,146 +1,263 @@
-@media only screen and (min-width: 1000px) {
-    .container {
-        flex-direction: row;
-        margin-left: 50px;
-        margin-right: 50px;
-        align-items: center;
-        display: flex;
-    }
-
-    .svg-container {
-        flex: 2;
-    }
-
-    .titleContainer p {
-        width: 1000px;
-    }
+@font-face {
+    font-family: tron;
+    src: url(../Fonts/Tr2n.TTF);
 }
 
-@media only screen and (max-width: 1000px) {
-    .container {
-        flex-direction: column;
-        align-items: stretch;
-        margin-left: 15px;
-        margin-right: 15px;
-    }
-
-    .right {
-        margin-left: 50px;
-    }
-
-    .left {
-        margin-right: 50px;
-    }
-
-    .svg-container {
-        flex: 1;
-    }
-
-    .titleContainer p {
-        width: 90%;
-    }
-
-    .reverseOrder {
-        flex-direction: column-reverse
-    }
-
-    .graphHeader {
-        text-align: center;
-    }
+body>div:not(.lity) {
+    margin-bottom: 100px;
 }
 
-.right {
-    margin-right: 50px;
+
+#stacked-bar-container>svg {
+    border-radius: 20px;
+    border: 1px solid #66ff66;
+    box-shadow: 0px 3px 19px 0px #66ff6680;
 }
 
-.left {
-    margin-left: 50px;
+
+#force-graph-container>svg {
+    border-radius: 20px;
+    border: 1px solid #db80fe;
+    box-shadow: 0px 3px 19px 0px #db80fe80;
 }
 
-.container {
-    margin-top: 100px;
-    margin-bottom: 200px;
+
+.vertical-container {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 100px;
+}
+
+.horizontal-container {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    /* height: 650px; */
     justify-content: space-around;
-    border-radius: 50px;
+}
+
+#stacked-bar-container text {
+    color: white;
+    fill: white;
+    padding-right: -50px;
+}
+
+.tick line {
+    stroke: white;
+}
+
+svg text {
+    user-select: none;
+}
+
+#force-graph-container {
+    flex-grow: 0;
+}
+
+#game-info {
+    size: 1;
+    flex-grow: 1;
+    padding: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    height: 700px;
+    overflow-y: auto;
+    flex-direction: column;
+    border-radius: 20px;
+    background-color: black;
+    border: 1px solid #db80fe;
+    box-shadow: 0px 3px 19px 0px #db80fe80;
+}
+
+#game-info>div {
+    padding: 4px;
+}
+
+/* #game-info>div:nth-child(n+1) {
+    margin-top: 20px;
+} */
+
+*:focus {
+    outline: none;
+}
+
+#game-info div {
+    align-items: center;
+}
+
+#game-info hr {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: gray;
+    width: 80%;
+    opacity: .2;
+}
+
+#game-info :not(button):not(.mdc-chip__text) {
+    user-select: none;
+    color: white;
+}
+
+#game-info button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    text-align: center;
+    user-select: none;
+}
+
+h1 {
+    text-align: center;
+    user-select: none;
+}
+
+/* Chip Set Styling */
+
+.mdc-chip-set>div {
+    background: #db80fe;
+}
+
+.mdc-chip__text {
+    color: black;
+}
+
+/* Scrollbar Styling */
+#game-info::-webkit-scrollbar {
+    width: 6px;
+    background-color: black;
+}
+
+#game-info::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 3px;
+}
+
+#game-info::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px black;
+    background-color: black;
 }
 
 #title {
     margin-top: 50px;
-    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+    font-family: tron;
+    font-size: 90px;
+    color: #6FC3DF;
+    /* text-shadow: 0 0 10px #fff */
 }
 
-h1 {
-    font-size: 70;
-}
-
-h2 {
-    font-size: 30;
-    vertical-align: center;
-    /* margin:100px */
-}
-
-.titleContainer p {
-    text-align: center;
-    font-size: 20px;
-}
-
-.gridlines line {
-    stroke: lightgrey
-}
-
-td {
-    vertical-align: center
-}
-
-.titleContainer {
+.graph-title {
     margin-top: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+    font-family: tron;
+    font-size: 50px;
+    color: #66ff66;
 }
 
-.verticalContainer {
-    margin-top: 200px;
-    margin-bottom: 25px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+body {
+    background-color: black;
 }
 
-svg {
-    flex-shrink: 0;
+.link {
+    stroke: white;
 }
 
-.aside {
-    text-align: left;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
+#textInput {
+    margin-top: 30px;
     margin-bottom: 50px;
+    width: 500px;
+    height: 70px;
+    color: white;
+    font-size: 20px;
+    text-indent: 30px;
+    text-emphasis-color: black;
+    padding: 6px 15px 6px 30px;
+    border-radius: 30px;
+    border-color: #db80fe;
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+
+    background: url(../Images/search.png) 2px 3px;
+    background-repeat: no-repeat;
+    background-position: 15px 15px;
+    background-size: 40px 40px;
+    box-shadow: 0px 3px 19px 0px #db80fe80;
 }
 
-.aside p {
-    margin-bottom: 25px;
+.params {
+    background: black;
+    color: lightgrey;
+    padding: 10px;
+    font-size: 30px;
+    margin: 10;
+    border-radius: 10px;
+    border-color: #43b443;
+    text-align-last: center;
+    background-repeat: no-repeat;
+    background-position: 2px 3px;
+    background-size: 10px 10px;
+    box-shadow: 0px 3px 19px 0px #66ff6680;
+
 }
 
-.tick text {
-    font-size: 15;
-    font-style: normal;
+.param-containter {
+    justify-content: center;
 }
 
-g text {
-    font-size: 15;
-    font-style: normal;
+.relation-finder {
+    color: white;
+    text-align: center;
+    font-family: tron;
+    font-size: 45px;
+    color: #66ff66;
+    /* text-shadow: 0 0 10px #fff */
 }
 
-.axis path {
-    stroke-width: 2px;
+.summary-box {
+    font-size: 17px;
 }
 
-.axesLabel {
-    font-size: 18px;
+
+.outlined-button {
+    color: #db80fe !important;
+    border-color: #db80fe !important;
+    margin-left: 20px;
+
+    -webkit-transition: background-color .3s;
+    -transition: background-color .3s;
+
+
+}
+
+a {
+    text-decoration: none;
+}
+
+/* @keyframes change-color {
+    from {
+        color: #db80fe !important;
+        border-color: #db80fe !important;
+    }
+
+    to {
+        background-color: #db80fe;
+        color: black !important;
+    }
+} */
+
+.outlined-button:hover {
+    background-color: #db80fe;
+    color: black !important;
+    /* animation-duration: 0.2s;
+    animation-name: change-color; */
 }

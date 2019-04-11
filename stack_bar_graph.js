@@ -1,8 +1,8 @@
 const buildGraph = async () => {
 
 
-    const game_data = await d3.csv("games.csv");
-    const bar_graph_data = await d3.json("stacked_bar_data.json");
+    const game_data = await d3.csv("Datasets/games.csv");
+    const bar_graph_data = await d3.json("Datasets/stacked_bar_data.json");
 
     /* Configure padding around graph */
     let stackBarPadding = {
