@@ -1,6 +1,6 @@
 @font-face {
     font-family: tron;
-    src: url(./Fonts/Tr2n.TTF);
+    src: url(Fonts/Tr2n.TTF);
 }
 
 body>div:not(.lity) {
@@ -14,13 +14,11 @@ body>div:not(.lity) {
     box-shadow: 0px 3px 19px 0px #66ff6680;
 }
 
-
 #force-graph-container>svg {
     border-radius: 20px;
     border: 1px solid #db80fe;
     box-shadow: 0px 3px 19px 0px #db80fe80;
 }
-
 
 .vertical-container {
     display: flex;
@@ -77,9 +75,6 @@ svg text {
     padding: 4px;
 }
 
-/* #game-info>div:nth-child(n+1) {
-    margin-top: 20px;
-} */
 
 *:focus {
     outline: none;
@@ -220,13 +215,11 @@ body {
     font-family: tron;
     font-size: 45px;
     color: #66ff66;
-    /* text-shadow: 0 0 10px #fff */
 }
 
 .summary-box {
     font-size: 17px;
 }
-
 
 .outlined-button {
     color: #db80fe !important;
@@ -235,25 +228,11 @@ body {
 
     -webkit-transition: background-color .3s;
     -transition: background-color .3s;
-
-
 }
 
 a {
     text-decoration: none;
 }
-
-/* @keyframes change-color {
-    from {
-        color: #db80fe !important;
-        border-color: #db80fe !important;
-    }
-
-    to {
-        background-color: #db80fe;
-        color: black !important;
-    }
-} */
 
 .outlined-button:hover {
     background-color: #db80fe;
