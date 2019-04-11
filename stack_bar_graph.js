@@ -26,11 +26,22 @@ const buildGraph = async () => {
         .attr("viewBox", "0 0 " + stackBarContainerSvgWidth + " " + stackBarContainerSvgHeight)
         .classed("svg-content", true);
 
+    /* Add Y Axis Label */
     stackBarContainerSvg.append("text")
+        .attr("id", "x_axis_label")
         .attr("transform", "translate(" + (stackBarPadding.left + stackBarWidth / 2.0) + "," + (stackBarPadding.top + stackBarHeight + stackBarPadding.bottom / 2.0 + 20) + ")")
         .style("text-anchor", "middle")
         .attr("class", "axesLabel")
         .text("Year")
+        .style("font-family", "sans-serif")
+        .style("font-size", "30px");
+
+    /* Add Y Axis Label */
+    stackBarContainerSvg.append("text")
+        .attr("transform", "translate(" + (stackBarPadding.left / 2.0 - 10) + "," + (stackBarHeight / 2.0 + stackBarPadding.top) + ")rotate(270)")
+        .style("text-anchor", "middle")
+        .attr("class", "axesLabel")
+        .text("Percentage In Category")
         .style("font-family", "sans-serif")
         .style("font-size", "30px");
 
@@ -117,15 +128,7 @@ const buildGraph = async () => {
 
 
         /* Add axes labels */
-        stackBarContainerSvg.select("text").text(x_category);
-
-        stackBarContainerSvg.append("text")
-            .attr("transform", "translate(" + (stackBarPadding.left / 2.0 - 10) + "," + (stackBarHeight / 2.0 + stackBarPadding.top) + ")rotate(270)")
-            .style("text-anchor", "middle")
-            .attr("class", "axesLabel")
-            .text("Percentage In Category")
-            .style("font-family", "sans-serif")
-            .style("font-size", "30px");
+        stackBarContainerSvg.select("text#x_axis_label").text(x_category);
 
 
         /* Remove domain components garbage */
@@ -180,7 +183,8 @@ const buildGraph = async () => {
         }
         /************************************************************************************************/
 
-        
+
+        /************************************* Populating Graph With Data ******************************************/
         let stackBarColorScale = ["#ff0029", "#377eb8", "#66a61e", "#984ea3", "#00d2d5", "#ff7f00", "#af8d00",
             "#7f80cd", "#b3e900", "#c42e60", "#a65628", "#f781bf", "#8dd3c7", "#bebada", "#fb8072",
             "#80b1d3"
@@ -214,16 +218,19 @@ const buildGraph = async () => {
 
 
         /**************** Update legend with new values ***************/
-        let legendYOffset = 200;
 
+        /* start a data join using the y categories as the data */
         let legend_items = legend.selectAll("g")
             .data(columns)
 
+        /* Remove legend elements that are no longer needed */
         legend_items.exit().remove();
 
+        /* create new g elements for each new new legend item */
         let enter = legend_items.enter()
             .append("g")
 
+        /* Creating rectangle color key for legend item */
         enter.append("rect")
             .attr("width", "20")
             .attr("height", "20")
@@ -232,6 +239,7 @@ const buildGraph = async () => {
                 return stackBarColorScale[columns.length - 1 - index]
             })
 
+        /* Creating text for legend item */
         enter.append("text")
             .text(column_val => column_val)
             .style("font-size", "15px")
@@ -241,6 +249,10 @@ const buildGraph = async () => {
             .attr("font-family", "Arial")
             .attr("id", column_val => "_" + column_val.replace(/\ /g, ""))
 
+        /* legend's starting y relative to top of svg */
+        let legendYOffset = 200;
+
+        /* configure all legend items, old and new */
         let merged = legend_items.merge(enter)
         merged.attr("class", "legend-item")
             .attr("id", column_val => "_" + column_val.replace(/\ /g, ""))
@@ -255,10 +267,12 @@ const buildGraph = async () => {
             .each(function (d, index) {
                 let self = d3.select(this);
 
+                /* update legend item's text element */
                 self.select("text")
                     .text(column_val => d)
                     .attr("id", column_val => "_" + column_val.replace(/\ /g, ""))
 
+                /* update legend item's rectangular color key element */
                 self.select("rect")
                     .attr("id", column_val => "_" + column_val.replace(/\ /g, ""))
                     .style("fill", stackBarColorScale[columns.length - 1 - index])
