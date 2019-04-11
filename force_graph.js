@@ -8,9 +8,6 @@ var margin = {
     width = svg.attr("width") - margin.left - margin.right,
     height = svg.attr("height") - margin.top - margin.bottom;
 
-
-
-
 const startup = async () => {
 
     var dataList = document.getElementById('datalist');
@@ -21,18 +18,22 @@ const startup = async () => {
         id: 'id'
     };
 
+    /* load datasets */
     const fuse_data = await d3.json("fuse.json");
     const id_to_data = await d3.json("id_to_data.json");
     const genre_data = await d3.json("genres_data.json");
     const platform_data = await d3.json("platforms_data.json");
     const videos_data = await d3.json("videos_data.json");
 
+    /* initialize fuze library used to search datasets */
     var fuse = new Fuse(fuse_data, options)
 
     var body = d3.select('body')
 
     var input = d3.select("input#textInput");
 
+    /* update search options when input element text changes 
+       and update graph when autosuggest element is selected */
     input.on("keypress", function () {
             titleSearch(this.value);
         })
@@ -43,8 +44,8 @@ const startup = async () => {
             update_force_graph(game_id)
         });
 
+    /* remove all old options from autosuggest list */
     function removeOptions() {
-
         while (dataList.firstChild) {
             dataList.removeChild(dataList.firstChild);
         }
@@ -52,6 +53,7 @@ const startup = async () => {
 
     var results_dict = {}
 
+    /* populate autosuggest list with search results from Fuse */
     function titleSearch(title) {
         const results = fuse.search(title).slice(0, 10);
         const titles = results.map(id => id_to_data[id]);
@@ -73,40 +75,41 @@ const startup = async () => {
 
     }
 
-    /////////////////////////////////////////////////////////////////
-
     document.getElementById("game-info").setAttribute("style", "")
 
+    /* remove all elements from info box */
     function empty_info_box() {
         document.getElementById("game-info").innerHTML = ""
 
     }
 
     function update_info_box(game_id) {
+
+        /* if in the process of draggin, don't ever update info box */
         if (is_dragging) return;
 
+        /* remove previous data from info box */
         empty_info_box();
 
+        /* scroll info box to top when new game info is displayed */
         document.getElementById("game-info").scrollTop = 0;
 
-        // Add title
+        /* Add title section to info box */
         game_info_box.append("div")
             .attr("class", "demo-card__primary")
             .append("h1")
             .attr("class", "demo-card__title mdc-typography mdc-typography--headline6")
             .text(id_to_data[game_id]["name"])
             .style("font-size", "30px");
-
         game_info_box.append("hr")
 
-        // Add Genre Chips
+
+        /* Add genres section to info box */
         let genre_chip_div = game_info_box.append("div");
         genre_chip_div.attr("class", "mdc-chip-set");
-
         genre_chip_div.append("span")
             .text("Genres")
             .attr("style", "margin-right:10px;")
-
         let genres = id_to_data[game_id]["genres"];
         genres.forEach(d => {
             genre_chip_div.append("div")
@@ -131,16 +134,14 @@ const startup = async () => {
                         })
                 })
         })
-
         game_info_box.append("hr")
 
-        // Add Platform Chips
+        /* Add platforms section to info box */
         let platform_chip_div = game_info_box.append("div");
         platform_chip_div.attr("class", "mdc-chip-set");
         platform_chip_div.append("span")
             .text("Platforms")
             .attr("style", "margin-right:10px;")
-
         if ("platforms" in id_to_data[game_id]) {
             let platforms = id_to_data[game_id]["platforms"];
             platforms.forEach(d => {
@@ -170,16 +171,13 @@ const startup = async () => {
             platform_chip_div.append("span")
                 .text("None found")
         }
-
-
         game_info_box.append("hr")
 
+        /* Add rating section to info box */
         let rating_div = game_info_box.append("div")
-
         rating_div.append("span")
             .text("Rating: ")
             .attr("style", "margin-right:10px;")
-
         rating_div.append("span")
             .text(function () {
                 if ("rating" in id_to_data[game_id]) {
@@ -190,29 +188,22 @@ const startup = async () => {
                 }
             })
             .attr("style", "margin-right:10px;")
-
         game_info_box.append("hr")
 
-        // Add Summary
+        /* Add summary category to info box */
         game_info_box.append("div")
             .attr("class", "demo-card__secondary mdc-typography mdc-typography--body2 summary-box")
             .text(id_to_data[game_id]["summary"])
-
         game_info_box.append("hr")
 
 
-        // Add Videos
+        /* Add videos category to info box */
         let videos_div = game_info_box.append("div")
         videos_div.append("span")
             .text("Gameplay Videos: ")
-        // videos_div.append("div")
-        //     .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/uD4izuDMUQA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
         if ("videos" in id_to_data[game_id]) {
             id_to_data[game_id].videos.forEach((video_id, i) => {
                 videos_div
-                    // .append("div")
-                    // .attr("class", "mdc-card__action-buttons")
-                    // .attr("style", "text-align:center; margin: auto;")
                     .append("a")
                     .attr("data-lity", "")
                     .attr("href", "https://www.youtube.com/watch?v=" + videos_data[video_id]["video_id"] + "?autoplay=1")
@@ -226,10 +217,9 @@ const startup = async () => {
             videos_div.append("span")
                 .text("Not found")
         }
-
         game_info_box.append("hr");
 
-        // Add Button Linking to IGDB Page
+        /* Add Button Linking to IGDB Page */
         let action_button_div = game_info_box.append("div")
             .attr("class", "mdc-card__actions")
             .append("div")
@@ -244,17 +234,17 @@ const startup = async () => {
     }
 
 
-    //////////////////////////////////////////////////////////////////
-
-
 
     var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    /* retrieve game info box element*/
     var game_info_box = d3.select("div#game-info")
 
     var nodes = [],
         links = [];
 
 
+    /* build d3 force simulation */
     var simulation = d3.forceSimulation(nodes)
         .force("charge", d3.forceManyBody().strength(-500))
         .force("link", d3.forceLink(links).distance(75).id(d => d.id))
@@ -263,6 +253,7 @@ const startup = async () => {
         .force("center", d3.forceCenter())
         .on("tick", ticked);
 
+    /* create svg groups to contain nodes and links */
     var g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")"),
         link = g.append("g").attr("stroke", "#000").attr("stroke-width", 1.5).selectAll(".link"),
         node = g.append("g").attr("stroke", "#fff").attr("stroke-width", 1.5).selectAll(".node");
@@ -270,20 +261,20 @@ const startup = async () => {
     var added;
 
     function update_force_graph(game_id) {
+        /* update placeholder of search box to be current selected game */
         input.attr("placeholder", id_to_data[game_id]["name"])
             .attr("text", "")
 
         nodes = []
         links = []
 
+        /* max depth of similarity graph starting from central (selected) game */
         const num_layers = 4;
 
+        /* list of games already in the graph */
         added = [game_id];
 
-        add_similar(game_id, num_layers);
-
-        // let i = 0;
-
+        /* recursive function for finding related games and adding them to graph */
         function add_similar(game_id, level) {
             game_id = parseInt(game_id);
             game_data = id_to_data[game_id];
@@ -315,6 +306,9 @@ const startup = async () => {
             }
         }
 
+        add_similar(game_id, num_layers);
+
+
         /************************* Graph data joins on nodes and links *********************************/
 
         const default_radius = 15;
@@ -331,11 +325,13 @@ const startup = async () => {
         /* remove nodes no longer needed from graph */
         node.exit().remove();
 
+        /* create scale to generate radius from rating */
         let rating_scale = d3.scalePow()
             .exponent(4)
             .domain([0, 100])
             .range([5, 30]);
 
+        /* create new nodes to add to graph and update reused nodes with new data */
         node = node.enter().append("circle")
             .call(drag)
             .merge(node)
