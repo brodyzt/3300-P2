@@ -30,6 +30,7 @@ const buildGraph = async () => {
         .style("text-anchor", "middle")
         .attr("class", "axesLabel")
         .text("Year")
+        .style("font-family", "sans-serif")
         .style("font-size", "30px");
 
 
@@ -171,6 +172,7 @@ const buildGraph = async () => {
             .style("text-anchor", "middle")
             .attr("class", "axesLabel")
             .text("Percentage In Category")
+            .style("font-family", "sans-serif")
             .style("font-size", "30px");
 
 
