@@ -94,7 +94,7 @@ const buildGraph = async () => {
         // console.log(data_key)
 
         const graph_data = bar_graph_data[data_key][1];
-        const columns = bar_graph_data[data_key][0];
+        const columns = bar_graph_data[data_key][0].slice(0,10);
         console.log(columns)
 
         const x_vals = graph_data.map(x => x[x_category]);
@@ -217,8 +217,8 @@ const buildGraph = async () => {
             .data(d => d)
             .join("rect")
             .attr("class", function (d, i) {
-                console.log(d["category"])
-                return d["category"];
+                console.log(d["category"].replace(/\ /g, ""))
+                return "_" + d["category"].replace(/\ /g, "");
             })
             .on("mouseover", d => mouseOverCategory(d["category"]))
             .on("mouseout", d => mouseOutCategory(d["category"]))
@@ -243,42 +243,43 @@ const buildGraph = async () => {
 
 
         function mouseOverCategory(category) {
-            d3.select("rect#" + category)
+            d3.select("rect#" + "_" + category.replace(/\ /g, ""))
                 .transition()
                 .duration(100)
                 .attr("width", 30)
                 .attr("opacity", 1)
 
-            d3.select("text#" + category)
+            d3.select("text#" + "_" + category.replace(/\ /g, ""))
                 .transition()
                 .duration(100)
                 .attr("dx", 35)
                 .attr("font-weight", "bold")
 
-            console.log(stackBarXScale)
-            console.log(stackBarXScale.bandwidth)
-            d3.selectAll("rect." + category)
+            // console.log(stackBarXScale)
+            // console.log(stackBarXScale.bandwidth)
+            d3.selectAll("rect." + "_" + category.replace(/\ /g, ""))
                 .transition()
                 .duration(100)
-                .attr("width", stackBarXScale.bandwidth() + 10)
-                .attr("transform", "translate(-5,0)")
+                .attr("width", stackBarXScale.bandwidth() * 1.1)
+                .attr("transform", "translate(-" +  (stackBarXScale.bandwidth() * 0.05) + ",0)")
                 .attr("opacity", 1);
         }
 
         function mouseOutCategory(category) {
-            d3.select("rect#" + category)
+            console.log(category.replace(/\ /g, ""))
+            d3.select("rect#" + "_" + category.replace(/\ /g, ""))
                 .transition()
                 .duration(100)
-                .attr("width", 20)
+                .attr("width", 20)  
                 .attr("opacity", 0.8)
 
-            d3.select("text#" + category)
+            d3.select("text#" + "_" + category.replace(/\ /g, ""))
                 .transition()
                 .duration(100)
                 .attr("dx", 25)
                 .attr("font-weight", "normal")
 
-            d3.selectAll("rect." + category)
+            d3.selectAll("rect." + "_" + category.replace(/\ /g, ""))
                 .transition()
                 .duration(100)
                 .attr("width", stackBarXScale.bandwidth())
@@ -290,54 +291,133 @@ const buildGraph = async () => {
 
         console.log(series)
 
-
-        let stackBarLegendHeight = stackBarHeight / 4;
-        let stackBarLegendWidth = stackBarPadding.legendWidth;
-        let stackBarLegendInset = 1400 - stackBarLegendWidth;
         let legendYOffset = 100;
 
-        var legend = stackBarContainerSvg.append("g")
-            .attr("class", "legend")
-            .attr("width", stackBarLegendWidth)
-            .attr("height", stackBarLegendHeight)
-            .attr("transform", "translate(" + stackBarLegendInset + "," + (0) +
-                ")");
+        console.log(columns.reverse())
 
+        let legend_items = legend.selectAll("g")
+            .data(columns)
 
-        columns.forEach((column_val, index) => {
+        legend_items.exit().remove();
 
-            console.log(stackBarHeight)
-            console.log(index)
-            console.log(series.length)
-            let current_item = legend.append("g")
-                .attr("class", "legend-item")
-                .attr("width", width / (series.length * 1.0))
-                .attr("id", column_val)
-                .attr("transform", "translate(0," +
+        let enter = legend_items.enter()
+            .append("g")
+
+        enter.append("rect")
+            .attr("width", "20")
+            .attr("height", "20")
+            .attr("id", column_val => "_" + column_val.replace(/\ /g, ""))
+            .attr("opacity", 0.8)
+            .style("fill", function (d, index) {
+                return stackBarColorScale[columns.length - 1 - index]
+            })
+            .on("mouseover", column_val => mouseOverCategory(column_val))
+            .on("mouseout", column_val => mouseOutCategory(column_val))
+
+        enter.append("text")
+            .text(column_val => column_val)
+            .attr("dx", "25")
+            .attr("dy", "15")
+            .attr("font-size", "10")
+            .attr("font-family", "Arial")
+            .attr("id", column_val => "_" + column_val.replace(/\ /g, ""))
+
+        console.log(enter)
+
+        console.log(legend_items)
+
+        let merged = legend_items.merge(enter)
+        console.log(merged)
+        merged.attr("class", "legend-item")
+            // .attr("test", d => console.log(d))
+            .attr("width", width / (series.length * 1.0))
+            .attr("id", column_val => column_val)
+            .attr("transform", function (d, index) {
+                console.log(index)
+                return "translate(0," +
                     (legendYOffset + index * stackBarHeight / (series.length * 2.0)) +
-                    ")");
+                    ")"
+            })
+            .each(function (d, index) {
+                let self = d3.select(this);
+                console.log(self)
+                console.log(index)
+
+                self.select("text")
+                    .text(column_val => d)
+                    .attr("id", column_val => "_" + column_val.replace(/\ /g, ""))
+
+                self.select("rect")
+                    .attr("id", column_val => "_" + column_val.replace(/\ /g, ""))
+                    .style("fill", stackBarColorScale[columns.length - 1 - index])
+                    .on("mouseover", column_val => mouseOverCategory("_" + column_val.replace(/\ /g, "")))
+                    .on("mouseout", column_val => mouseOutCategory("_" + column_val.replace(/\ /g, "")))
+            })
 
 
-            current_item.append("rect")
-                .attr("width", "20")
-                .attr("height", "20")
-                .attr("id", column_val)
-                .attr("opacity", 0.8)
-                .style("fill", stackBarColorScale[index])
-                .on("mouseover", () => mouseOverCategory(column_val))
-                .on("mouseout", () => mouseOutCategory(column_val));
+        // columns.reverse().forEach((column_val, index) => {
 
-            current_item.append("text")
-                .text(column_val)
-                .attr("dx", "25")
-                .attr("dy", "15")
-                .attr("font-size", "10")
-                .attr("font-family", "Arial")
-                .attr("id", column_val)
+        //     console.log(stackBarHeight)
+        //     console.log(index)
+        //     console.log(series.length)
+        //     let current_item = legend.append("g")
+        //         .attr("class", "legend-item")
+        //         .attr("width", width / (series.length * 1.0))
+        //         .attr("id", column_val)
+        //         .attr("transform", "translate(0," +
+        //             (legendYOffset + index * stackBarHeight / (series.length * 2.0)) +
+        //             ")");
 
+
+        //     current_item.append("rect")
+        //         .attr("width", "20")
+        //         .attr("height", "20")
+        //         .attr("id", column_val)
+        //         .attr("opacity", 0.8)
+        //         .style("fill", stackBarColorScale[columns.length - 1 - index])
+        //         .on("mouseover", () => mouseOverCategory(column_val))
+        //         .on("mouseout", () => mouseOutCategory(column_val));
+
+        //     current_item.append("text")
+        //         .text(column_val)
+        //         .attr("dx", "25")
+        //         .attr("dy", "15")
+        //         .attr("font-size", "10")
+        //         .attr("font-family", "Arial")
+        //         .attr("id", column_val)
+
+        // })
+
+        param1_select.innerHTML = ""
+        param2_select.innerHTML = ""
+
+        console.log(x_categories)
+        console.log("hi")
+
+        x_categories.filter(x => x != y_category).forEach(category => {
+            const option = document.createElement("option");
+            option.text = category;
+            if (category == x_category) option.setAttribute("selected", "selected");
+            param2_select.add(option);
         })
+
+        y_categories.filter(y => y != x_category).forEach(category => {
+            const option = document.createElement("option");
+            option.text = category;
+            if (category == y_category) option.setAttribute("selected", "selected");
+            param1_select.add(option);
+        })
+
+        console.log(y_category)
+        console.log(x_category)
+        // param1_select.selected = y_category
+        // param2_select.selected = x_category
     }
 
+
+    let stackBarLegendHeight = stackBarHeight / 4;
+    let stackBarLegendWidth = stackBarPadding.legendWidth;
+    let stackBarLegendInset = 1400 - stackBarLegendWidth;
 
     /* Add left edge for x axis */
     stackBarSvg.append("line")
@@ -359,29 +439,38 @@ const buildGraph = async () => {
         .attr("stroke-width", "2px")
         .attr("class", "yAxisBoundary")
 
+    /* Add Legend */
+    var legend = stackBarContainerSvg.append("g")
+        .attr("class", "legend")
+        .attr("width", stackBarLegendWidth)
+        .attr("height", stackBarLegendHeight)
+        .attr("transform", "translate(" + stackBarLegendInset + "," + (0) +
+            ")");
+
     param1_select.addEventListener("change", reload_attributes);
     param2_select.addEventListener("change", reload_attributes);
 
+    console.log("reloading")
     reload_attributes();
 }
 
-buildGraph();
 
-const x_categories = ["Platform", "Publisher", "Genre"]
-const y_categories = ["Genre", "Year", "Publisher", "Platform"]
-
+var y_categories = ["Platform", "Publisher", "Genre"]
+var x_categories = ["Genre", "Year", "Publisher", "Platform"]
 
 var param1_select = document.getElementById("graph1param1");
 var param2_select = document.getElementById("graph1param2");
 
-x_categories.forEach(category => {
+x_categories.filter(x => x != y_categories[0]).forEach(category => {
+    const option = document.createElement("option");
+    option.text = category;
+    param2_select.add(option);
+})
+
+y_categories.filter(y => y != x_categories[0]).forEach(category => {
     const option = document.createElement("option");
     option.text = category;
     param1_select.add(option);
 })
 
-y_categories.forEach(category => {
-    const option = document.createElement("option");
-    option.text = category;
-    param2_select.add(option);
-})
+buildGraph();
