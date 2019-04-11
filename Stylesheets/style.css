@@ -1,6 +1,6 @@
 @font-face {
     font-family: tron;
-    src: url(Fonts/Tr2n.TTF);
+    src: url(./Fonts/Tr2n.TTF);
 }
 
 body>div:not(.lity) {
