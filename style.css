@@ -17,11 +17,31 @@ svg {
     margin-left: 50px;
     margin-right: 50px;
     align-items: center;
+    height: 800px;
 }
 
-.game-info-class {
+#force-graph {
+    size: 2;
+}
+
+#game-info {
+    size: 1;
     flex-grow: 1; 
     padding: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    height: 800px;
+    overflow-y: auto;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#game-info > div:nth-child(n+1) {
+    margin-top:20px;
+}
+
+.no-select :not(button) {
+    user-select: none;
 }
 
 h2 {

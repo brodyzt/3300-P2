@@ -2,7 +2,7 @@
 
 // set the dimensions and margins of the graph
 
-const svg = d3.select("svg#graph");
+const svg = d3.select("svg#force-graph");
 var margin = {
         top: 10,
         right: 10,
@@ -30,7 +30,6 @@ const startup = async () => {
     const platform_data = await d3.json("platforms_data.json");
 
     var fuse = new Fuse(fuse_data, options)
-    console.log(fuse.search("old"))
 
     var body = d3.select('body')
 
@@ -39,13 +38,8 @@ const startup = async () => {
 
     input.on("keypress", function () {
             titleSearch(this.value);
-            console.log(this.value)
-            console.log("input")
         })
         .on("change", function (d, i) {
-            console.log("change")
-            console.log(this)
-            console.log(this.game_id)
             let result_text = this.value;
             let game_id = results_dict[result_text];
 
@@ -64,7 +58,6 @@ const startup = async () => {
     function titleSearch(title) {
         const results = fuse.search(title).slice(0, 10);
         const titles = results.map(id => id_to_data[id]);
-        console.log(titles)
 
         results_dict = {}
         removeOptions();
@@ -124,11 +117,12 @@ const startup = async () => {
         //     }
         // })
 
-        
+        game_info_box.classed("no-select", true);
         // add image
         game_info_box.append("div")
             .attr("class", "mdc-card__media mdc-card__media--16-9 demo-card__media")
             .style("background-image", "url(sample.jpg)")
+            .style("border-radius", "10px")
 
         // Add title
         game_info_box.append("div")
@@ -142,7 +136,6 @@ const startup = async () => {
         chip_div.attr("class", "mdc-chip-set");
         
         let genres = id_to_data[game_id]["genres"];
-        console.log(genres)
         genres.forEach(d => {
             chip_div.append("div")
             .attr("class", "mdc-chip")
@@ -156,7 +149,6 @@ const startup = async () => {
         platform_chip_div.attr("class", "mdc-chip-set");
         
         let platforms = id_to_data[game_id]["platforms"];
-        console.log(platforms)
         platforms.forEach(d => {
             platform_chip_div.append("div")
             .attr("class", "mdc-chip")
@@ -166,7 +158,7 @@ const startup = async () => {
         })
 
         // Add Summary
-        chip_div.append("div")
+        game_info_box.append("div")
             .attr("class", "demo-card__secondary mdc-typography mdc-typography--body2")
             .text(id_to_data[game_id]["summary"])
 
@@ -318,19 +310,14 @@ const startup = async () => {
                 })
 
                 if (level - 1 > 0 && "similar_games" in game_data) {
-                    console.log(game_data["name"])
                     similar_games = game_data["similar_games"].filter(d => {
                         let key_in = d in id_to_data;
                         let not_already_added = !added.includes(d)
                         let truth_val = key_in && not_already_added;
 
-                        console.log(added)
-                        console.log("d_type: " + typeof (d) + " d:'" + String(d) + "' key_in:" + String(key_in) + " not_already_in:" + String(not_already_added));
                         return truth_val;
                     });
-                    console.log(similar_games)
                     similar_games.forEach(d => {
-                        console.log("Adding: " + id_to_data[game_id]["name"] + "---" + id_to_data[d]["name"] + " connection")
                         links.push(Object.create({
                             source: game_id,
                             target: d
@@ -341,9 +328,6 @@ const startup = async () => {
                 }
             }
         }
-
-        console.log(links)
-        console.log(nodes)
 
         // nodes = similar_game_ids.filter(d => d in id_to_data).map(d => {
         //     console.log("This: " + id_to_data[d]["name"]);
@@ -386,14 +370,8 @@ const startup = async () => {
             .attr("cursor", "pointer")
             .on("mouseover", function (d, i) {
                 let self = d3.select(this)
-                console.log(d)
                 label.text(d.name);
                 update_info_box(d.id)
-                console.log(this)
-                console.log(typeof (self.attr("cx")))
-                console.log(typeof (width / 2.0))
-                console.log("x: " + (parseInt(self.attr("cx")) + (width / 2.0) + 20))
-                console.log("y: " + (parseInt(self.attr("cy")) + height / 2.0 - 20))
                 label.attr("x", parseInt(self.attr("cx")) + width / 2.0 + 20).attr("y", parseInt(self.attr("cy")) + height / 2.0 - 20);
             })
             .on("mouseout", function (d, i) {
@@ -401,7 +379,6 @@ const startup = async () => {
                 update_info_box(game_id);
             })
             .on("click", function (d, i) {
-                console.log("Clicked")
                 if (d.id != game_id) update_force_graph(d.id);
             });
 
@@ -418,14 +395,13 @@ const startup = async () => {
         simulation.alpha(1).restart();
 
 
-        update_info_box(game_id);
+        // update_info_box(game_id);
     }
 
     function dragstarted(d) {
         if (!d3.event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
         d.fy = d.y;
-        console.log(this.label)
         label.text(d.name);
         label.attr("x", d3.event.x + width / 2.0 + 20).attr("y", d3.event.y + height / 2.0 - 20);
     }
@@ -433,7 +409,6 @@ const startup = async () => {
     function dragged(d) {
         d.fx = d3.event.x;
         d.fy = d3.event.y;
-        console.log(label)
         label.attr("x", d3.event.x + width / 2.0 + 20).attr("y", d3.event.y + height / 2.0 - 20);
     }
 

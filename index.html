@@ -20,12 +20,22 @@
 <body>
 
     <h2> Video Games and Platforms Popularity </h2>
-    
+
     <div class="horizontal-container">
         <div>
-            <svg id="graph" height="800" width="800" style="background: #sff; margin-top:50px"></svg>
+            <svg id="force-graph" height="800" width="1000" style="background: #sff"></svg>
         </div>
-        <div id="game-info" width="100%" class="mdc-card demo-card demo-basic-with-header game-info-class"></div>
+        <div id="game-info" width="100%" class="mdc-card demo-card demo-basic-with-header game-info-class">
+            <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate">
+                <div class="mdc-linear-progress__buffering-dots"></div>
+                <div class="mdc-linear-progress__buffer"></div>
+                <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar"><span
+                        class="mdc-linear-progress__bar-inner"></span></div>
+                <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar"><span
+                        class="mdc-linear-progress__bar-inner"></span></div>
+            </div>
+        </div>
+
     </div>
 
     <br>
