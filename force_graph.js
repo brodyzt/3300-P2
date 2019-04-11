@@ -27,6 +27,7 @@ const startup = async () => {
     const fuse_data = await d3.json("fuse.json");
     const id_to_data = await d3.json("id_to_data.json");
     const genre_data = await d3.json("genres_data.json");
+    const platform_data = await d3.json("platforms_data.json");
 
     var fuse = new Fuse(fuse_data, options)
     console.log(fuse.search("old"))
@@ -148,6 +149,20 @@ const startup = async () => {
             .append("div")
             .attr("class", "mdc-chip__text")
             .text(genre_data[d]["name"])
+        })
+
+        // Add Platform Chips
+        let platform_chip_div = game_info_box.append("div");
+        platform_chip_div.attr("class", "mdc-chip-set");
+        
+        let platforms = id_to_data[game_id]["platforms"];
+        console.log(platforms)
+        platforms.forEach(d => {
+            platform_chip_div.append("div")
+            .attr("class", "mdc-chip")
+            .append("div")
+            .attr("class", "mdc-chip__text")
+            .text(platform_data[d]["name"])
         })
 
         // Add Summary
