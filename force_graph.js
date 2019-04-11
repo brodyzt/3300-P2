@@ -271,7 +271,7 @@ const startup = async () => {
 
     function update_force_graph(game_id) {
         input.attr("placeholder", id_to_data[game_id]["name"])
-        .attr("text", "")
+            .attr("text", "")
 
         nodes = []
         links = []
@@ -315,9 +315,10 @@ const startup = async () => {
             }
         }
 
+        /************************* Graph data joins on nodes and links *********************************/
 
-        // Apply the general update pattern to the nodes.
         const default_radius = 15;
+
         let drag = d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
@@ -326,6 +327,8 @@ const startup = async () => {
         node = node.data(nodes, function (d) {
             return d.id;
         });
+
+        /* remove nodes no longer needed from graph */
         node.exit().remove();
 
         let rating_scale = d3.scalePow()
@@ -389,23 +392,32 @@ const startup = async () => {
                 if (d.id != game_id) update_force_graph(d.id);
             });
 
-        // Apply the general update pattern to the links.
+        /* apply the general update pattern to the links. */
         link = link.data(links, function (d) {
             return d.source.id + "-" + d.target.id;
         });
+
+        /* remove links that are no longer needed from the graph */
         link.exit().remove();
-        link = link.enter().append("line").merge(link)
+
+        /* add new links to graph and add class 'link' to all links */
+        link = link.enter()
+            .append("line")
+            .merge(link)
             .classed("link", true);
 
-        // Update and restart the simulation.
+        /* update and restart the simulation */
         simulation.nodes(nodes);
         simulation.force("link").links(links);
         simulation.alpha(1).restart();
 
+        /********************************************************************/
 
+        /* reload information box with information for selected game */
         update_info_box(game_id);
     }
 
+    /* function to run when circle starts being dragged */
     function dragstarted(d) {
         is_dragging = true;
         if (!d3.event.active) simulation.alphaTarget(0.3).restart();
@@ -413,11 +425,13 @@ const startup = async () => {
         d.fy = d.y;
     }
 
+    /* function to run each time circle center changes while being dragged */
     function dragged(d) {
         d.fx = d3.event.x;
         d.fy = d3.event.y;
     }
 
+    /* function to run once circle is done being dragged */
     function dragended(d) {
         is_dragging = false;
         if (!d3.event.active) simulation.alphaTarget(0);
@@ -425,12 +439,11 @@ const startup = async () => {
         d.fy = null;
     }
 
-
-    update_force_graph(1078);
-
+    /* indicates how to animate elements of force graph during each animation frame */
     function ticked() {
         const radius = 15;
 
+        /* update the node center */
         node.attr("cx", function (d) {
                 return d.x = Math.max(radius - width / 2.0, Math.min(width / 2.0 - radius, d.x));
             })
@@ -438,6 +451,7 @@ const startup = async () => {
                 return d.y = Math.max(radius - height / 2.0, Math.min(height / 2.0 - radius, d.y));
             })
 
+        /* update link locations */
         link.attr("x1", function (d) {
                 return d.source.x;
             })
@@ -451,6 +465,9 @@ const startup = async () => {
                 return d.target.y;
             });
     }
+
+    /* Initialize graph with game_id 1078 being the central node */
+    update_force_graph(1078);
 
 };
 

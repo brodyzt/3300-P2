@@ -54,27 +54,31 @@ const buildGraph = async () => {
     let stackBarXAxisSVGComponent = stackBarSvg.append("g");
     let stackBarYAxisSVGComponent = stackBarSvg.append("g");
 
+
     function reload_attributes() {
         const x_category = param2_select.value;
         const y_category = param1_select.value;
 
+        /* shouldn't happen but if the selected x axis attribute 
+           is the same as the y axis attribute, don't update the graph */
         if (x_category == y_category) {
             return;
         }
 
         const data_key = y_category + "_" + x_category;
-
         const graph_data = bar_graph_data[data_key][1];
         const columns = bar_graph_data[data_key][0].slice(0, 10);
-
         const x_vals = graph_data.map(x => x[x_category]);
 
+        /* Create scale for X axis*/
         let stackBarXScale = d3.scaleBand()
             .domain(x_vals)
             .range([0, stackBarWidth])
             .paddingInner(0.25)
             .paddingOuter(0.25);
 
+
+        /* Create scale for Y axis*/
         let stackBarYScale = d3.scaleLinear()
             .domain([0, 1])
             .range([stackBarHeight, 0]);
@@ -91,9 +95,11 @@ const buildGraph = async () => {
                 return String(d) + "%"
             })
 
+        /* create stack for producing stacked bars */
         let stackBarStack = d3.stack()
             .keys(columns);
 
+        /* generate series data used for box sizes */
         let series = stackBarStack(graph_data)
         series = series.map((d, i) => {
             return d.map(d2 => {
