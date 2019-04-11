@@ -92,6 +92,8 @@ const buildGraph = async () => {
         })
 
 
+        /********************************* Create X and Y axes for graph *****************************/
+
         /* Append axis SVG components to DOM */
         stackBarXAxisSVGComponent
             .attr("transform", "translate(0," + (stackBarHeight) + ")")
@@ -126,15 +128,63 @@ const buildGraph = async () => {
             .style("font-size", "30px");
 
 
-        // Remove domain components garbage
+        /* Remove domain components garbage */
         d3.selectAll("path.domain").remove();
 
-        /* Add Data to graph */
+        /*******************************************************************************/
+
+        /************************** Create functions to indicate which value is being hovered over *********************************/
+
+        /* Modifies elements to highlight the selected category */
+        function mouseOverCategory(category) {
+            d3.select("rect#" + category)
+                .transition()
+                .duration(100)
+                .attr("width", 30)
+                .attr("opacity", 1)
+
+            d3.select("text#" + category)
+                .transition()
+                .duration(100)
+                .attr("dx", 35)
+                .attr("font-weight", "bold")
+
+            d3.selectAll("rect." + category)
+                .transition()
+                .duration(100)
+                .attr("width", stackBarXScale.bandwidth() * 1.1)
+                .attr("transform", "translate(-" + (stackBarXScale.bandwidth() * 0.05) + ",0)")
+                .attr("opacity", 1);
+        }
+
+        /* Resets elements back to normal after mouse leaves */
+        function mouseOutCategory(category) {
+            d3.select("rect#" + category)
+                .transition()
+                .duration(100)
+                .attr("width", 20)
+                .attr("opacity", 0.75)
+
+            d3.select("text#" + category)
+                .transition()
+                .duration(100)
+                .attr("dx", 25)
+                .attr("font-weight", "normal")
+
+            d3.selectAll("rect." + category)
+                .transition()
+                .duration(100)
+                .attr("width", Math.round(stackBarXScale.bandwidth()))
+                .attr("transform", "translate(0,0)")
+                .attr("opacity", .75);
+        }
+        /************************************************************************************************/
+
+        
         let stackBarColorScale = ["#ff0029", "#377eb8", "#66a61e", "#984ea3", "#00d2d5", "#ff7f00", "#af8d00",
             "#7f80cd", "#b3e900", "#c42e60", "#a65628", "#f781bf", "#8dd3c7", "#bebada", "#fb8072",
             "#80b1d3"
         ]
-        let verticalSpacing = 1;
 
         stackBarContentsSVG
             .selectAll("g")
@@ -162,48 +212,6 @@ const buildGraph = async () => {
             .attr("opacity", 0.75);
 
 
-
-        function mouseOverCategory(category) {
-            d3.select("rect#" + category)
-                .transition()
-                .duration(100)
-                .attr("width", 30)
-                .attr("opacity", 1)
-
-            d3.select("text#" + category)
-                .transition()
-                .duration(100)
-                .attr("dx", 35)
-                .attr("font-weight", "bold")
-
-            d3.selectAll("rect." + category)
-                .transition()
-                .duration(100)
-                .attr("width", stackBarXScale.bandwidth() * 1.1)
-                .attr("transform", "translate(-" + (stackBarXScale.bandwidth() * 0.05) + ",0)")
-                .attr("opacity", 1);
-        }
-
-        function mouseOutCategory(category) {
-            d3.select("rect#" + category)
-                .transition()
-                .duration(100)
-                .attr("width", 20)
-                .attr("opacity", 0.75)
-
-            d3.select("text#" + category)
-                .transition()
-                .duration(100)
-                .attr("dx", 25)
-                .attr("font-weight", "normal")
-
-            d3.selectAll("rect." + category)
-                .transition()
-                .duration(100)
-                .attr("width", Math.round(stackBarXScale.bandwidth()))
-                .attr("transform", "translate(0,0)")
-                .attr("opacity", .75);
-        }
 
         /**************** Update legend with new values ***************/
         let legendYOffset = 200;
@@ -258,12 +266,6 @@ const buildGraph = async () => {
 
         /**********************************************************************/
 
-        stackBarXAxisSVGComponent.selectAll(".tick text").attr("y", 20).attr("dx", 0).attr("font-size", "10px");
-
-
-        legend.select("text")
-            .text(y_category);
-
         /******************************* Rebuilding Select Elements****************************/
 
         /* Remove all existing Options from select elements */
@@ -289,6 +291,12 @@ const buildGraph = async () => {
         })
 
         /*****************************************************************************************/
+
+
+        stackBarXAxisSVGComponent.selectAll(".tick text").attr("y", 20).attr("dx", 0).attr("font-size", "10px");
+
+        legend.select("text")
+            .text(y_category);
     }
 
 
