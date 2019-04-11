@@ -87,6 +87,8 @@ const startup = async () => {
 
         empty_info_box();
 
+        document.getElementById("game-info").scrollTop = 0;
+
         // Add title
         game_info_box.append("div")
             .attr("class", "demo-card__primary")
@@ -216,15 +218,18 @@ const startup = async () => {
                     .attr("href", "https://www.youtube.com/watch?v=" + videos_data[video_id]["video_id"] + "?autoplay=1")
                     .attr("target", "_blank")
                     .append("button")
+                    .attr("class", "outlined-button mdc-button mdc-button--outlined")
                     // .attr("class", "mdc-button mdc-button--raised")
-                    .text("Play Video " + String(i + 1))
+                    .text("Watch Video " + String(i + 1))
             })
         } else {
             videos_div.append("span")
                 .text("Not found")
         }
 
-        // Add Buttons
+        game_info_box.append("hr");
+
+        // Add Button Linking to IGDB Page
         let action_button_div = game_info_box.append("div")
             .attr("class", "mdc-card__actions")
             .append("div")
@@ -234,8 +239,8 @@ const startup = async () => {
             .attr("href", id_to_data[game_id]["url"])
             .attr("target", "_blank")
             .append("button")
-            .attr("class", "mdc-button mdc-button--raised")
-            .text("View Game on IGDB")
+            .attr("class", "outlined-button mdc-button mdc-button--outlined")
+            .text("Visit Game's IGDB")
     }
 
 
