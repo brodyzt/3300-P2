@@ -13,9 +13,11 @@
     <script src="Libraries/jquery.js"></script>
     <script src="Libraries/lity.min.js"></script>
 
+    <!-- Other Libraries -->
     <script src="Libraries/d3.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.js"></script> -->
     <script src="Libraries/fuse.js"></script>
+
+    <!-- Our resources -->
     <link rel="stylesheet" href="Stylesheets/style.css">
 </head>
 
@@ -24,7 +26,12 @@
     <h2 id="title">Video Game Market</h2>
 
     <div class="vertical-container">
-        <h2 class="graph-title" style="color:#66ff66">Game Market Breakdown</h2>
+        <div class="horizontal-container" style="justify-content: center;">
+            <h2 class="graph-title" style="color:#66ff66">Game Market Breakdown</h2>
+            <div class="help-box" id="bar-graph-help" color="#66ff66" style="border-color:#66ff66;">
+                <span style="color:#66ff66;">?</span>
+            </div>
+        </div>
         <div class="horizontal-container" style="margin-top:25px; margin-bottom:50px">
             <div id="stacked-bar-container">
                 <svg height="700" id="stackedBar"></svg>
@@ -41,7 +48,12 @@
     <script src="stack_bar_graph.js"></script>
 
     <div class="vertical-container">
-        <h2 class="graph-title" style="color:#db80fe">Related Games Finder</h2>
+        <div class="horizontal-container" style="justify-content: center;">
+            <h2 class="graph-title" style="color:#db80fe">Related Games Finder</h2>
+            <div class="help-box" id="network-graph-help" color="#db80fe" style="border-color: #db80fe;">
+                <span style="color:#db80fe">?</span>
+            </div>
+        </div>
         <div class="horizontal-container">
             <div id="force-graph-container">
                 <svg id="force-graph" height="700" width="1000" style="background: #sff"></svg>
@@ -69,7 +81,7 @@
 
     <script src="force_graph.js"></script>
 
-
+    <script src="script.js"></script>
 
 </body>
 

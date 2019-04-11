@@ -211,7 +211,7 @@ const startup = async () => {
                     .append("button")
                     .attr("class", "outlined-button mdc-button mdc-button--outlined")
                     // .attr("class", "mdc-button mdc-button--raised")
-                    .text("Watch Video " + String(i + 1))
+                    .text("Video " + String(i + 1))
             })
         } else {
             videos_div.append("span")

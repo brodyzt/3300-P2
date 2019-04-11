@@ -150,10 +150,10 @@ h1 {
 }
 
 .graph-title {
-    margin-top: 50px;
+    /* margin-top: 50px;
     margin-left: auto;
-    margin-right: auto;
-    width: 75%;
+    margin-right: auto; */
+    /* width: 75%; */
     font-family: tron;
     font-size: 50px;
     color: #66ff66;
@@ -240,3 +240,26 @@ a {
     /* animation-duration: 0.2s;
     animation-name: change-color; */
 }
+
+.help-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-width: 2px;
+    border-style: solid;
+    margin-left: 25px;
+}
+
+.help-box span {
+    user-select: none;
+}
+
+
+/* .help-box:hover {
+    background-color: #db80fe;
+    color: black !important;
+} */
