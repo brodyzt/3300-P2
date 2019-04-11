@@ -1,6 +1,6 @@
 @font-face {
     font-family: tron;
-    src: url(../Fonts/Tr2n.TTF);
+    src: url(Fonts/Tr2n.TTF);
 }
 
 body>div:not(.lity) {
@@ -187,7 +187,7 @@ body {
     -moz-border-radius: 30px;
     -webkit-border-radius: 30px;
 
-    background: url(../Images/search.png) 2px 3px;
+    background: url(Images/search.png) 2px 3px;
     background-repeat: no-repeat;
     background-position: 15px 15px;
     background-size: 40px 40px;
