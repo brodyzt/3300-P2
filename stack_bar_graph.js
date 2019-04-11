@@ -164,7 +164,6 @@ const buildGraph = async () => {
 
 
         function mouseOverCategory(category) {
-            console.log(category)
             d3.select("rect#" + category)
                 .transition()
                 .duration(100)
@@ -206,13 +205,8 @@ const buildGraph = async () => {
                 .attr("opacity", .75);
         }
 
-        // add legend
-
-        console.log(series)
-
+        /**************** Update legend with new values ***************/
         let legendYOffset = 200;
-
-        console.log(columns.reverse())
 
         let legend_items = legend.selectAll("g")
             .data(columns)
@@ -262,16 +256,22 @@ const buildGraph = async () => {
                     .style("fill", stackBarColorScale[columns.length - 1 - index])
             })
 
+        /**********************************************************************/
+
         stackBarXAxisSVGComponent.selectAll(".tick text").attr("y", 20).attr("dx", 0).attr("font-size", "10px");
 
 
         legend.select("text")
             .text(y_category);
 
+        /******************************* Rebuilding Select Elements****************************/
 
+        /* Remove all existing Options from select elements */
         param1_select.innerHTML = ""
         param2_select.innerHTML = ""
 
+        /* Repopulate options for attriubutes to graph on x axis,
+           making sure not to include the attribute already selected for y axis */
         x_categories.filter(x => x != y_category).forEach(category => {
             const option = document.createElement("option");
             option.text = category;
@@ -279,18 +279,18 @@ const buildGraph = async () => {
             param2_select.add(option);
         })
 
+        /* Repopulate options for attriubutes to graph on y axis,
+           making sure not to include the attribute already selected for x axis */
         y_categories.filter(y => y != x_category).forEach(category => {
             const option = document.createElement("option");
             option.text = category;
             if (category == y_category) option.setAttribute("selected", "selected");
             param1_select.add(option);
         })
+
+        /*****************************************************************************************/
     }
 
-
-    let stackBarLegendHeight = stackBarHeight / 4;
-    let stackBarLegendWidth = stackBarPadding.legendWidth;
-    let stackBarLegendInset = 1400 - stackBarLegendWidth;
 
     /* Add left edge for x axis */
     stackBarSvg.append("line")
@@ -312,7 +312,12 @@ const buildGraph = async () => {
         .attr("stroke-width", "2px")
         .attr("class", "yAxisBoundary")
 
-    /* Add Legend */
+    /*********** Create Legend Framework From Scratch **************/
+    let stackBarLegendHeight = stackBarHeight / 4;
+    let stackBarLegendWidth = stackBarPadding.legendWidth;
+    let stackBarLegendInset = 1400 - stackBarLegendWidth;
+
+
     var legend = stackBarContainerSvg.append("g")
         .attr("class", "legend")
         .attr("width", stackBarLegendWidth)
@@ -327,21 +332,25 @@ const buildGraph = async () => {
         .text("Platform")
         .style("font-family", "sans-serif")
         .style("font-size", "25px");
+    /**************************************/
 
+    /* Rebuild graph when settings are changed */
     param1_select.addEventListener("change", reload_attributes);
     param2_select.addEventListener("change", reload_attributes);
 
-    console.log("reloading")
+    /* Rebuild graph given new settings */
     reload_attributes();
 }
 
-
+/* List possible values for attributes */
 var y_categories = ["Platform", "Publisher", "Genre"]
 var x_categories = ["Genre", "Year", "Publisher", "Platform"]
 
 var param1_select = document.getElementById("graph1param1");
 var param2_select = document.getElementById("graph1param2");
 
+
+/* Add possible values to select HTML elements */
 x_categories.filter(x => x != y_categories[0]).forEach(category => {
     const option = document.createElement("option");
     option.text = category;
@@ -354,4 +363,5 @@ y_categories.filter(y => y != x_categories[0]).forEach(category => {
     param1_select.add(option);
 })
 
+/* Initialize the graph */
 buildGraph();
