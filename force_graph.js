@@ -1,7 +1,3 @@
-//this first part is just code I found online to get an idea of what to do
-
-// set the dimensions and margins of the graph
-
 const svg = d3.select("svg#force-graph");
 var margin = {
         top: 10,
@@ -203,9 +199,11 @@ const startup = async () => {
 
 
         // Add Videos
-        let rating_div = game_info_box.append("div")
-        rating_div.append("span")
+        let videos_div = game_info_box.append("div")
+        videos_div.append("span")
             .text("Gameplay Videos:")
+        videos_div.append("div")
+            .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/uD4izuDMUQA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
 
 
         // Add Buttons
