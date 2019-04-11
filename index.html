@@ -2,6 +2,15 @@
 
 <head>
     <title>CS3300 Project 2</title>
+
+
+    <!-- Resources for Material Design Components -->
+    <link rel="stylesheet" href="Stylesheets/material-components-web.min.css">
+    <script src="Libraries/material-components-web.min.js"></script>
+
+    <!-- Stylesheet for Roboto Font -->
+    <link href="Stylesheets/roboto.css" rel="stylesheet">
+
     <script src="d3.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.js"></script> -->
     <script src="fuse.js"></script>
@@ -15,7 +24,7 @@
         <div>
             <svg id="graph" height="800" width="800" style="background: #sff; margin-top:50px"></svg>
         </div>
-        <div id="game-info"></div>
+        <div id="game-info" width="100%" class="mdc-card demo-card demo-basic-with-header game-info-class"></div>
     </div>
 
     <br>
@@ -25,14 +34,14 @@
     <br>
 
 
-    <script src="max.js"></script>
+    <script src="force_graph.js"></script>
 
     <svg width="1200" height="800" id="stackedBar"></svg>
     <br>
     <select id="graph1param1"></select>
     <select id="graph1param2"></select>
 
-    <script src="zack.js"></script>
+    <script src="stack_bar_graph.js"></script>
 
 
 </body>

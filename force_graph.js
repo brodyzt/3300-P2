@@ -108,19 +108,65 @@ const startup = async () => {
 
         empty_info_box();
 
-        let attributes = ["name", "genre", "platforms", "url", "summary"]
-        attributes.forEach(d => {
-            if (d == "url") {
-                game_info_box.append("div")
-                    .append("a")
-                    .text(id_to_data[game_id][d])
-                    .attr("href", id_to_data[game_id][d])
-                    .attr("target", "_blank")
-            } else {
-                game_info_box.append("div")
-                    .text(id_to_data[game_id][d])
-            }
+        // let attributes = ["name", "genre", "platforms", "url", "summary"]
+        // attributes.forEach(d => {
+        //     if (d == "url") {
+        //         game_info_box.append("div")
+        //             .append("a")
+        //             .text(id_to_data[game_id][d])
+        //             .attr("href", id_to_data[game_id][d])
+        //             .attr("target", "_blank")
+        //     } else {
+        //         game_info_box.append("div")
+        //             .text(id_to_data[game_id][d])
+        //     }
+        // })
+
+        // Add title
+        game_info_box.append("div")
+            .attr("class", "demo-card__primary")
+            .append("h2")
+            .attr("class", "demo-card__title mdc-typography mdc-typography--headline6")
+            .text(id_to_data[game_id]["name"])
+
+        // Add Genre Chips
+        let chip_div = game_info_box.append("div");
+        chip_div.attr("class", "mdc-chip-set");
+        
+        let genres = id_to_data[game_id]["genres"];
+        console.log(genres)
+        genres.forEach(d => {
+            chip_div.append("div")
+            .attr("class", "mdc-chip")
+            .append("div")
+            .attr("class", "mdc-chip__text")
+            .text(d)
         })
+
+        //         <div class="mdc-card demo-card demo-basic-with-header">
+        //   <div class="demo-card__primary">
+        //     <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Our Changing Planet</h2>
+        //     <h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">by Kurt Wagner</h3>
+        //   </div>
+        //   <div class="mdc-card__primary-action demo-card__primary-action" tabindex="0">
+        //     <div class="mdc-card__media mdc-card__media--16-9 demo-card__media" style="background-image: url(&quot;https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg&quot;);"></div>
+        //     <div class="demo-card__secondary mdc-typography mdc-typography--body2">Visit ten places on our planet that are undergoing the biggest changes today.</div>
+        //   </div>
+        //   <div class="mdc-card__actions">
+        //     <div class="mdc-card__action-buttons">
+        //       <button class="mdc-button mdc-card__action mdc-card__action--button">Read</button>
+        //       <button class="mdc-button mdc-card__action mdc-card__action--button">Bookmark</button>
+        //     </div>
+        //     <div class="mdc-card__action-icons">
+        //       <button class="mdc-icon-button mdc-card__action mdc-card__action--icon--unbounded" aria-pressed="false" aria-label="Add to favorites" title="Add to favorites">
+        //         <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">favorite</i>
+        //         <i class="material-icons mdc-icon-button__icon">favorite_border</i>
+        //       </button>
+        //       <button class="mdc-icon-button material-icons mdc-card__action mdc-card__action--icon--unbounded" title="Share" data-mdc-ripple-is-unbounded="true">share</button>
+        //       <button class="mdc-icon-button material-icons mdc-card__action mdc-card__action--icon--unbounded" title="More options" data-mdc-ripple-is-unbounded="true">more_vert</button>
+        //     </div>
+        //   </div>
+        // </div>
     }
 
 
@@ -324,7 +370,7 @@ const startup = async () => {
         simulation.force("link").links(links);
         simulation.alpha(1).restart();
 
-        
+
         update_info_box(game_id);
     }
 

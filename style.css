@@ -18,3 +18,7 @@ svg {
     margin-right: 50px;
     align-items: center;
 }
+
+.game-info-class {
+    flex-grow: 1; 
+}
