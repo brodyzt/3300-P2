@@ -220,8 +220,8 @@ const buildGraph = async () => {
                 console.log(d["category"].replace(/\ /g, ""))
                 return "_" + d["category"].replace(/\ /g, "");
             })
-            .on("mouseover", d => mouseOverCategory(d["category"]))
-            .on("mouseout", d => mouseOutCategory(d["category"]))
+            .on("mouseover", d => mouseOverCategory("_" + d["category"].replace(/\ /g, "")))
+            .on("mouseout", d => mouseOutCategory("_" + d["category"].replace(/\ /g, "")))
             .transition()
             .duration(500)
             .attr("x", function (d) {
@@ -243,13 +243,15 @@ const buildGraph = async () => {
 
 
         function mouseOverCategory(category) {
-            d3.select("rect#" + "_" + category.replace(/\ /g, ""))
+            console.log("rect#" + category)
+            console.log(d3.select("rect#" + "_" + category.replace(/\ /g, "")))
+            d3.select("rect#" + category)
                 .transition()
                 .duration(100)
                 .attr("width", 30)
                 .attr("opacity", 1)
 
-            d3.select("text#" + "_" + category.replace(/\ /g, ""))
+            d3.select("text#" + category)
                 .transition()
                 .duration(100)
                 .attr("dx", 35)
@@ -257,7 +259,7 @@ const buildGraph = async () => {
 
             // console.log(stackBarXScale)
             // console.log(stackBarXScale.bandwidth)
-            d3.selectAll("rect." + "_" + category.replace(/\ /g, ""))
+            d3.selectAll("rect." + category)
                 .transition()
                 .duration(100)
                 .attr("width", stackBarXScale.bandwidth() * 1.1)
@@ -267,19 +269,19 @@ const buildGraph = async () => {
 
         function mouseOutCategory(category) {
             console.log(category.replace(/\ /g, ""))
-            d3.select("rect#" + "_" + category.replace(/\ /g, ""))
+            d3.select("rect#" + category)
                 .transition()
                 .duration(100)
                 .attr("width", 20)  
                 .attr("opacity", 0.8)
 
-            d3.select("text#" + "_" + category.replace(/\ /g, ""))
+            d3.select("text#" + category)
                 .transition()
                 .duration(100)
                 .attr("dx", 25)
                 .attr("font-weight", "normal")
 
-            d3.selectAll("rect." + "_" + category.replace(/\ /g, ""))
+            d3.selectAll("rect." + category)
                 .transition()
                 .duration(100)
                 .attr("width", stackBarXScale.bandwidth())

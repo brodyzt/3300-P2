@@ -19,10 +19,12 @@
 
 <body>
 
-    <h2 class="mdc-typography--headline3"> Video Games and Platforms Popularity </h2>
+    <h2 id="title"> Video Games and Platforms Popularity </h2>
 
     <div class="horizontal-container" style="margin-top:150px; margin-bottom:150px">
-        <svg width="1400" height="700" id="stackedBar"></svg>
+        <div id="stacked-bar-container">
+            <svg width="1400" height="700" id="stackedBar"></svg>
+        </div>
     </div>
     <br>
     <select id="graph1param1"></select>
@@ -30,25 +32,27 @@
 
     <script src="stack_bar_graph.js"></script>
 
-    <div class="horizontal-container">
-        <div>
-            <svg id="force-graph" height="700" width="1000" style="background: #sff"></svg>
-        </div>
-        <div id="game-info" width="100%" class="mdc-card demo-card demo-basic-with-header game-info-class">
-            <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate">
-                <div class="mdc-linear-progress__buffering-dots"></div>
-                <div class="mdc-linear-progress__buffer"></div>
-                <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar"><span
-                        class="mdc-linear-progress__bar-inner"></span></div>
-                <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar"><span
-                        class="mdc-linear-progress__bar-inner"></span></div>
+    <div class="vertical-container">
+        <div class="horizontal-container">
+            <div id="force-graph-container">
+                <svg id="force-graph" height="700" width="1000" style="background: #sff"></svg>
+            </div>
+            <div id="game-info" width="100%" class="mdc-card demo-card demo-basic-with-header"
+                style="justify-content: center">
+                <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate">
+                    <div class="mdc-linear-progress__buffering-dots"></div>
+                    <div class="mdc-linear-progress__buffer"></div>
+                    <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar"><span
+                            class="mdc-linear-progress__bar-inner"></span></div>
+                    <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar"><span
+                            class="mdc-linear-progress__bar-inner"></span></div>
+                </div>
             </div>
         </div>
-
+        <input type="text" id="textInput" list="datalist" class="search">
     </div>
 
     <br>
-    <input type="text" id="textInput" list="datalist" placeholder="Call of Duty" class="search">
     <!--if (typeof(this.selectedIndex) != undefined)-->
     <datalist id="datalist"></datalist>
     <br>

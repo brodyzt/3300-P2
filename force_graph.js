@@ -18,6 +18,7 @@ var margin = {
 const startup = async () => {
 
     var dataList = document.getElementById('datalist');
+    var is_dragging = false;
 
     var options = {
         keys: ['name'],
@@ -90,12 +91,15 @@ const startup = async () => {
 
     /////////////////////////////////////////////////////////////////
 
+    document.getElementById("game-info").setAttribute("style", "")
+
     function empty_info_box() {
         document.getElementById("game-info").innerHTML = ""
 
     }
 
     function update_info_box(game_id) {
+        if(is_dragging) return;
 
         // while (game_info_box.firstChild) {
         //     game_info_box.removeChild(dataList.firstChild);
@@ -117,12 +121,13 @@ const startup = async () => {
         //     }
         // })
 
-        game_info_box.classed("no-select", true);
+        console.log(id_to_data[game_id]["name"])
+
         // add image
-        game_info_box.append("div")
-            .attr("class", "mdc-card__media mdc-card__media--16-9 demo-card__media")
-            .style("background-image", "url(sample.jpg)")
-            .style("border-radius", "10px")
+        // game_info_box.append("div")
+        //     .attr("class", "mdc-card__media mdc-card__media--16-9 demo-card__media")
+        //     .style("background-image", "url(sample.jpg)")
+        //     .style("border-radius", "10px")
 
         // Add title
         game_info_box.append("div")
@@ -131,31 +136,44 @@ const startup = async () => {
             .attr("class", "demo-card__title mdc-typography mdc-typography--headline6")
             .text(id_to_data[game_id]["name"])
 
+        game_info_box.append("hr")
+
         // Add Genre Chips
-        let chip_div = game_info_box.append("div");
-        chip_div.attr("class", "mdc-chip-set");
-        
+        let genre_chip_div = game_info_box.append("div");
+        genre_chip_div.attr("class", "mdc-chip-set");
+
+        genre_chip_div.append("span")
+            .text("Genres")
+            .attr("style", "margin-right:10px;")
+
         let genres = id_to_data[game_id]["genres"];
         genres.forEach(d => {
-            chip_div.append("div")
-            .attr("class", "mdc-chip")
-            .append("div")
-            .attr("class", "mdc-chip__text")
-            .text(genre_data[d]["name"])
+            genre_chip_div.append("div")
+                .attr("class", "mdc-chip")
+                .append("div")
+                .attr("class", "mdc-chip__text")
+                .text(genre_data[d]["name"])
         })
+
+        game_info_box.append("hr")
 
         // Add Platform Chips
         let platform_chip_div = game_info_box.append("div");
         platform_chip_div.attr("class", "mdc-chip-set");
-        
+        platform_chip_div.append("span")
+            .text("Platforms")
+            .attr("style", "margin-right:10px;")
+
         let platforms = id_to_data[game_id]["platforms"];
         platforms.forEach(d => {
             platform_chip_div.append("div")
-            .attr("class", "mdc-chip")
-            .append("div")
-            .attr("class", "mdc-chip__text")
-            .text(platform_data[d]["name"])
+                .attr("class", "mdc-chip")
+                .append("div")
+                .attr("class", "mdc-chip__text")
+                .text(platform_data[d]["name"])
         })
+
+        game_info_box.append("hr")
 
         // Add Summary
         game_info_box.append("div")
@@ -175,11 +193,11 @@ const startup = async () => {
             .attr("class", "mdc-button mdc-button--raised")
             .text("View Game on IGDB")
 
-    //     <div class="mdc-card__actions">
-            // <div class="mdc-card__action-buttons">
-            //   <button class="mdc-button mdc-card__action mdc-card__action--button">Read</button>
-            //   <button class="mdc-button mdc-card__action mdc-card__action--button">Bookmark</button>
-    // </div>
+        //     <div class="mdc-card__actions">
+        // <div class="mdc-card__action-buttons">
+        //   <button class="mdc-button mdc-card__action mdc-card__action--button">Read</button>
+        //   <button class="mdc-button mdc-card__action mdc-card__action--button">Bookmark</button>
+        // </div>
 
 
         //         <div class="mdc-card demo-card demo-basic-with-header">
@@ -277,6 +295,7 @@ const startup = async () => {
     var added;
 
     function update_force_graph(game_id) {
+        input.attr("placeholder", id_to_data[game_id]["name"])
 
         nodes = []
         links = []
@@ -387,7 +406,8 @@ const startup = async () => {
             return d.source.id + "-" + d.target.id;
         });
         link.exit().remove();
-        link = link.enter().append("line").merge(link);
+        link = link.enter().append("line").merge(link)
+            .classed("link", true);
 
         // Update and restart the simulation.
         simulation.nodes(nodes);
@@ -399,6 +419,7 @@ const startup = async () => {
     }
 
     function dragstarted(d) {
+        is_dragging = true;
         if (!d3.event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
         d.fy = d.y;
@@ -413,6 +434,7 @@ const startup = async () => {
     }
 
     function dragended(d) {
+        is_dragging = false;
         if (!d3.event.active) simulation.alphaTarget(0);
         d.fx = null;
         d.fy = null;
@@ -420,7 +442,7 @@ const startup = async () => {
     }
 
 
-    update_force_graph(979);
+    update_force_graph(1078);
 
     function ticked() {
         const radius = 15;
