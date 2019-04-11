@@ -18,6 +18,7 @@ svg {
     margin-right: 50px;
     align-items: center;
     height: 700px;
+    justify-content: center;
 }
 
 #force-graph {

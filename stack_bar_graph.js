@@ -10,15 +10,15 @@ const buildGraph = async () => {
         bottom: 100,
         left: 100,
         right: 100,
-        betweenLegend: -250
+        legendWidth: 200
     }
 
 
-    let stackBarContainerSvgWidth = 1200;
-    let stackBarContainerSvgHeight = 800;
+    let stackBarContainerSvgWidth = 1400;
+    let stackBarContainerSvgHeight = 700;
 
 
-    let stackBarWidth = stackBarContainerSvgWidth - stackBarPadding.left - stackBarPadding.right;
+    let stackBarWidth = stackBarContainerSvgWidth - stackBarPadding.left - stackBarPadding.right - stackBarPadding.legendWidth;
     let stackBarHeight = stackBarContainerSvgHeight - stackBarPadding.top - stackBarPadding.bottom;
 
     let stackBarContainerSvg = d3.select("svg#stackedBar")
@@ -33,7 +33,7 @@ const buildGraph = async () => {
 
 
     let stackBarSvg = stackBarContainerSvg.append("g")
-        .attr("transform", "translate(" + (stackBarContainerSvgWidth / 2.0 - stackBarWidth / 2.0) + "," + stackBarPadding.top + ")");
+        .attr("transform", "translate(" + stackBarPadding.left + "," + stackBarPadding.top + ")");
 
     let stackBarContentsSVG = stackBarSvg.append("g");
 
@@ -127,6 +127,16 @@ const buildGraph = async () => {
             .keys(columns);
 
         let series = stackBarStack(graph_data)
+        console.log(series)
+        series = series.map((d, i) => {
+            // console.log(d)
+            return d.map(d2 => {
+                d2["category"] = columns[i];
+                return d2;
+            });
+        })
+
+        console.log(series)
 
         // console.log(series)
 
@@ -205,22 +215,11 @@ const buildGraph = async () => {
             .attr("fill", (_, i) => stackBarColorScale[i])
             .selectAll("rect")
             .data(d => d)
-            // .enter()
-            // .append("rect")
-            // .attr("x", function (d) {
-            //     console.log(d);
-            //     console.log(d.data[x_category])
-            //     return stackBarXScale(d.data[x_category]);
-            // })
-            // .attr("y", function (d) {
-            //     console.log(d)
-            //     return stackBarYScale(d[1])
-            // })
-            // .attr("height", d => stackBarYScale(d[0]) - stackBarYScale(d[1]))
-            // .attr("width", d => stackBarXScale.bandwidth)
             .join("rect")
-            // .enter()
-            // .append("rect")
+            .attr("class", function(d,i) {
+                console.log(d["category"])
+                return d["category"];
+            })
             .transition()
             .duration(500)
             .attr("x", function (d) {
@@ -245,11 +244,17 @@ const buildGraph = async () => {
 
         console.log(series)
 
+        
+        let stackBarLegendHeight = stackBarHeight / 4;
+        let stackBarLegendWidth = stackBarPadding.legendWidth;
+        let stackBarLegendInset = 1400 - stackBarLegendWidth;
+        let legendYOffset = 100;
+
         var legend = stackBarContainerSvg.append("g")
             .attr("class", "legend")
-            .attr("width", width)
-            .attr("height", stackBarPadding.bottom)
-            .attr("transform", "translate(" + (stackBarPadding.left + width + 5) + "," + (stackBarPadding.top) +
+            .attr("width", stackBarLegendWidth)
+            .attr("height", stackBarLegendHeight)
+            .attr("transform", "translate(" + stackBarLegendInset + "," + (0) +
                 ")");
 
 
@@ -262,7 +267,7 @@ const buildGraph = async () => {
                 .attr("class", "legend-item")
                 .attr("width", width / (series.length * 1.0))
                 .attr("transform", "translate(0," +
-                    (index * stackBarHeight / (series.length * 2.0)) +
+                    (legendYOffset + index * stackBarHeight / (series.length * 2.0)) +
                     ")");
 
 
