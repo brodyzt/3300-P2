@@ -436,7 +436,7 @@ const startup = async () => {
             .call(drag)
             .merge(node)
             .attr("fill", function (d) {
-                return d.id == game_id ? "white" : color(d.id);
+                return d.id == game_id ? "black" : color(d.id);
             })
             .attr("r", function (d) {
 

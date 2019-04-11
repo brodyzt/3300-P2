@@ -8,14 +8,18 @@ body>div {
 }
 
 
-#stacked-bar-container > svg {
+#stacked-bar-container>svg {
     border-radius: 20px;
     border: 1px solid #66ff66;
-    box-shadow: 0px 3px 19px 0px #66ff6680;
+
+    box-shadow: 0px 11px 15px -7px rgba(102, 255, 102, 0.2),
+        0px 24px 38px 3px rgba(102, 255, 102, 0.14),
+        0px 9px 46px 8px rgba(102, 255, 102, .12);
+    /* 0px 3px 19px 0px #66ff6680; */
 }
 
 
-#force-graph-container > svg {
+#force-graph-container>svg {
     border-radius: 20px;
     border: 1px solid #db80fe;
     box-shadow: 0px 3px 19px 0px #db80fe80;
@@ -41,13 +45,13 @@ body>div {
 }
 
 #stacked-bar-container text {
-    color: white;
-    fill: white;
+    color: black;
+    fill: black;
     padding-right: -50px;
 }
 
 .tick line {
-    stroke: white;
+    stroke: black;
 }
 
 #force-graph-container {
@@ -155,11 +159,11 @@ h1 {
 }
 
 body {
-    background-color: black;
+    background-color: white;
 }
 
 .link {
-    stroke: white;
+    stroke: black;
 }
 
 #textInput {
@@ -167,10 +171,10 @@ body {
     margin-bottom: 50px;
     width: 500px;
     height: 70px;
-    color: white;
+    color: black;
     font-size: 20px;
     text-indent: 30px;
-    text-emphasis-color: white;
+    text-emphasis-color: black;
     padding: 6px 15px 6px 30px;
     border-radius: 30px;
     border-color: #db80fe;
@@ -196,19 +200,21 @@ body {
     background-repeat: no-repeat;
     background-position: 2px 3px;
     background-size: 10px 10px;
-    box-shadow: 0px 3px 19px 0px #43b44380;
+    box-shadow: 0px 11px 15px -7px rgba(102, 255, 102, 0.2),
+        0px 24px 38px 3px rgba(102, 255, 102, 0.14),
+        0px 9px 46px 8px rgba(102, 255, 102, 0.12);
 
 }
 
 .param-containter {
-  justify-content: center;
+    justify-content: center;
 }
 
 .relation-finder {
-  color: white;
-  text-align: center;
-  font-family: tron;
-  font-size: 45px;
-  color: #66ff66;
-  /* text-shadow: 0 0 10px #fff */
+    color: white;
+    text-align: center;
+    font-family: tron;
+    font-size: 45px;
+    color: #66ff66;
+    /* text-shadow: 0 0 10px #fff */
 }
