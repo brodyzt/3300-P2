@@ -20,8 +20,9 @@ svg {
 .horizontal-container {
     display: flex;
     flex-direction: row;
-    margin-left: 50px;
-    margin-right: 50px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
     align-items: center;
     height: 700px;
     justify-content: center;
@@ -32,8 +33,8 @@ svg {
     fill: white
 }
 
-#force-graph {
-    size: 2;
+#force-graph-container {
+    flex-grow: 0;
 }
 
 #game-info {
@@ -137,8 +138,6 @@ body {
     background-repeat: no-repeat;
     background-position: 2px 3px;
     background-size: 10px 10px;
-}
+    box-shadow: 0px 3px 19px 0px rgba(255, 255, 255, 0.5);
 
-input[list] {
-    font-size: 20px;
 }
