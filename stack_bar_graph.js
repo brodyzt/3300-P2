@@ -17,16 +17,16 @@ const buildGraph = async () => {
     let stackBarContainerSvgWidth = 1200;
     let stackBarContainerSvgHeight = 800;
 
-    
+
     let stackBarWidth = stackBarContainerSvgWidth - stackBarPadding.left - stackBarPadding.right;
     let stackBarHeight = stackBarContainerSvgHeight - stackBarPadding.top - stackBarPadding.bottom;
-    
+
     let stackBarContainerSvg = d3.select("svg#stackedBar")
         .attr("viewBox", "0 0 " + stackBarContainerSvgWidth + " " + stackBarContainerSvgHeight)
         .classed("svg-content", true);
-   
+
     stackBarContainerSvg.append("text")
-    .attr("transform", "translate(" + (stackBarPadding.left + stackBarWidth / 2.0) + "," + (stackBarPadding.top + stackBarHeight + stackBarPadding.bottom / 2.0) + ")")
+        .attr("transform", "translate(" + (stackBarPadding.left + stackBarWidth / 2.0) + "," + (stackBarPadding.top + stackBarHeight + stackBarPadding.bottom / 2.0) + ")")
         .style("text-anchor", "middle")
         .attr("class", "axesLabel")
         .text("Year");
@@ -85,9 +85,9 @@ const buildGraph = async () => {
     function reload_attributes() {
         const x_category = param2_select.value;
         const y_category = param1_select.value;
-        
-          if (x_category == y_category) {
-          return;
+
+        if (x_category == y_category) {
+            return;
         }
 
         const data_key = y_category + "_" + x_category;
@@ -154,7 +154,7 @@ const buildGraph = async () => {
 
         /* Add axes labels */
         stackBarContainerSvg.select("text").text(x_category);
-        
+
         stackBarContainerSvg.append("text")
             .attr("transform", "translate(" + (stackBarPadding.left / 2.0 - 10) + "," + (stackBarHeight / 2.0 + stackBarPadding.top) + ")rotate(270)")
             .style("text-anchor", "middle")
@@ -238,6 +238,65 @@ const buildGraph = async () => {
         // .attr("x", d => stackBarXAxis(d[0]))
         // .attr("y", d => stackBarYAxis(d[1]))
         // .attr("height", d => stackBarYAxis(d[0]))
+
+
+
+        // add legend
+
+        console.log(series)
+
+        var legend = stackBarContainerSvg.append("g")
+            .attr("class", "legend")
+            .attr("width", width)
+            .attr("height", stackBarPadding.bottom)
+            .attr("transform", "translate(" + (stackBarPadding.left + width + 5) + "," + (stackBarPadding.top) +
+                ")");
+
+
+        columns.forEach((genre, index) => {
+
+            console.log(stackBarHeight)
+            console.log(index)
+            console.log(series.length)
+            let current_item = legend.append("g")
+                .attr("class", "legend-item")
+                .attr("width", width / (series.length * 1.0))
+                .attr("transform", "translate(0," +
+                    (index * stackBarHeight / (series.length * 2.0)) +
+                    ")");
+
+
+            current_item.append("rect")
+                .attr("width", "20")
+                .attr("height", "20")
+                .attr("id", genre)
+                .style("fill", stackBarColorScale[index])
+                .on("mouseover", function () {
+                    let genre_circles = d3.selectAll("circle." + genre);
+                    genre_circles.call(d => {
+                        d.transition()
+                            .duration(100)
+                            .attr("r", d.attr("standard-radius") * 4.0);
+                    })
+                })
+                .on("mouseout", function () {
+                    let genre_circles = d3.selectAll("circle." + genre);
+                    genre_circles.call(d => {
+                        d.transition()
+                            .duration(100)
+                            .attr("r", d.attr("standard-radius"));
+                    })
+                });
+
+            current_item.append("text")
+                .text(genre)
+                .attr("dx", "25")
+                .attr("dy", "15")
+                .attr("font-size", "10")
+                .attr("font-family", "Arial")
+                .attr("id", series[index] + "_label")
+
+        })
     }
 
 
@@ -270,7 +329,7 @@ const buildGraph = async () => {
 buildGraph();
 
 const x_categories = ["Platform", "Publisher", "Genre"]
-const y_categories = ["Year", "Publisher", "Genre", "Platform"]
+const y_categories = ["Genre", "Year", "Publisher", "Platform"]
 
 
 var param1_select = document.getElementById("graph1param1");

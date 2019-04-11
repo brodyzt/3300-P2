@@ -395,7 +395,7 @@ const startup = async () => {
         simulation.alpha(1).restart();
 
 
-        // update_info_box(game_id);
+        update_info_box(game_id);
     }
 
     function dragstarted(d) {

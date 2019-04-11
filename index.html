@@ -19,11 +19,18 @@
 
 <body>
 
-    <h2> Video Games and Platforms Popularity </h2>
+    <h2 class="mdc-typography--headline3"> Video Games and Platforms Popularity </h2>
+
+    <svg width="1200" height="800" id="stackedBar"></svg>
+    <br>
+    <select id="graph1param1"></select>
+    <select id="graph1param2"></select>
+
+    <script src="stack_bar_graph.js"></script>
 
     <div class="horizontal-container">
         <div>
-            <svg id="force-graph" height="800" width="1000" style="background: #sff"></svg>
+            <svg id="force-graph" height="700" width="1000" style="background: #sff"></svg>
         </div>
         <div id="game-info" width="100%" class="mdc-card demo-card demo-basic-with-header game-info-class">
             <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate">
@@ -47,12 +54,6 @@
 
     <script src="force_graph.js"></script>
 
-    <svg width="1200" height="800" id="stackedBar"></svg>
-    <br>
-    <select id="graph1param1"></select>
-    <select id="graph1param2"></select>
-
-    <script src="stack_bar_graph.js"></script>
 
 
 </body>
