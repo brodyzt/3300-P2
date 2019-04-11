@@ -66,7 +66,7 @@ const startup = async () => {
         titles.forEach(function (item) {
             // Create a new <option> element.
 
-            let result_text = item["name"] // + " --- " + item["platform"] + " --- " +  item["year"] 
+            let result_text = item["name"] // + " --- " + item["platform"] + " --- " +  item["year"]
             results_dict[result_text] = item["id"]
 
             d3.select(dataList)
@@ -80,7 +80,7 @@ const startup = async () => {
             // option.value = item;
             // option.attr("onclick", function(d) {
             //     console.log("hi")
-            // }) 
+            // })
             // // Add the <option> element to the <datalist>.
             // dataList.appendChild(option);
         });
@@ -132,9 +132,10 @@ const startup = async () => {
         // Add title
         game_info_box.append("div")
             .attr("class", "demo-card__primary")
-            .append("h2")
+            .append("h1")
             .attr("class", "demo-card__title mdc-typography mdc-typography--headline6")
             .text(id_to_data[game_id]["name"])
+            .style("font-size", "30px");
 
         game_info_box.append("hr")
 
@@ -244,7 +245,7 @@ const startup = async () => {
         .force("x", d3.forceX())
         .force("y", d3.forceY())
         // .force("radial", d3.forceRadial().radius(d => {
-        //     return 80 * d.level 
+        //     return 80 * d.level
         // }).x(width / 2.0).y(height / 2.0).strength(10))
         .force("center", d3.forceCenter())
         // .alphaTarget(1)

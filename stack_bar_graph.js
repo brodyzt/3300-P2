@@ -43,6 +43,8 @@ const buildGraph = async () => {
     let stackBarYAxisSVGComponent = stackBarSvg.append("g");
 
 
+
+
     /* Creating legend for colors */
     // let stackBarLegendHeight = stackBarHeight / 4;
     // let stackBarLegendWidth = 200;
@@ -221,7 +223,6 @@ const buildGraph = async () => {
             .data(d => d)
             .join("rect")
             .attr("class", function (d, i) {
-                console.log(d["category"].replace(/\ /g, ""))
                 return "_" + d["category"].replace(/\ /g, "");
             })
             .on("mouseover", d => mouseOverCategory("_" + d["category"].replace(/\ /g, "")))
@@ -229,21 +230,15 @@ const buildGraph = async () => {
             .transition()
             .duration(500)
             .attr("x", function (d) {
-                // console.log(d);
-                // console.log(d.data[x_category])
                 return stackBarXScale(d.data[x_category]);
             })
             .attr("y", function (d) {
-                // console.log(d)
                 return stackBarYScale(d[1])
             })
             .attr("height", d => stackBarYScale(d[0]) - stackBarYScale(d[1]))
             .attr("width", stackBarXScale.bandwidth)
-            .attr("opacity", 0.8)
-        // .join("rect")
-        // .attr("x", d => stackBarXAxis(d[0]))
-        // .attr("y", d => stackBarYAxis(d[1]))
-        // .attr("height", d => stackBarYAxis(d[0]))
+            .attr("opacity", 0.75);
+
 
 
         function mouseOverCategory(category) {
@@ -277,7 +272,7 @@ const buildGraph = async () => {
                 .transition()
                 .duration(100)
                 .attr("width", 20)
-                .attr("opacity", 0.8)
+                .attr("opacity", 0.75)
 
             d3.select("text#" + category)
                 .transition()
@@ -290,14 +285,14 @@ const buildGraph = async () => {
                 .duration(100)
                 .attr("width", stackBarXScale.bandwidth())
                 .attr("transform", "translate(0,0)")
-                .attr("opacity", .8);
+                .attr("opacity", .75);
         }
 
         // add legend
 
         console.log(series)
 
-        let legendYOffset = 100;
+        let legendYOffset = 200;
 
         console.log(columns.reverse())
 
@@ -341,7 +336,7 @@ const buildGraph = async () => {
             .attr("id", column_val => column_val)
             .attr("transform", function (d, index) {
                 console.log(index)
-                return "translate(0," +
+                return "translate(-50," +
                     (legendYOffset + index * stackBarHeight / (series.length * 2.0)) +
                     ")"
             })
@@ -361,6 +356,8 @@ const buildGraph = async () => {
                     .on("mouseout", column_val => mouseOutCategory("_" + column_val.replace(/\ /g, "")))
             })
 
+          legend.select("text")
+          .text(y_category);
 
         // columns.reverse().forEach((column_val, index) => {
 
@@ -453,6 +450,14 @@ const buildGraph = async () => {
         .attr("height", stackBarLegendHeight)
         .attr("transform", "translate(" + stackBarLegendInset + "," + (0) +
             ")");
+
+    legend.append("text")
+    .attr("class", "label")
+    .attr("x", -50)
+    .attr("y", 180)
+    .text("Platform")
+    .style("font-family", "sans-serif")
+    .style("font-size", "25px");
 
     param1_select.addEventListener("change", reload_attributes);
     param2_select.addEventListener("change", reload_attributes);
