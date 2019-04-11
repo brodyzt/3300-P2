@@ -214,7 +214,7 @@ const startup = async () => {
                     // .attr("class", "mdc-card__action-buttons")
                     // .attr("style", "text-align:center; margin: auto;")
                     .append("a")
-                    .attr("data-lity","")
+                    .attr("data-lity", "")
                     .attr("href", "https://www.youtube.com/watch?v=" + videos_data[video_id]["video_id"] + "?autoplay=1")
                     .attr("target", "_blank")
                     .append("button")
@@ -271,6 +271,7 @@ const startup = async () => {
 
     function update_force_graph(game_id) {
         input.attr("placeholder", id_to_data[game_id]["name"])
+        .attr("text", "")
 
         nodes = []
         links = []
@@ -372,9 +373,16 @@ const startup = async () => {
             })
             .on("mouseover", function (d, i) {
                 let self = d3.select(this)
+                self.transition()
+                    .duration(200)
+                    .attr("r", self.attr("original_radius") * 1.5)
                 update_info_box(d.id)
             })
             .on("mouseout", function (d, i) {
+                let self = d3.select(this)
+                self.transition()
+                    .duration(200)
+                    .attr("r", self.attr("original_radius"))
                 update_info_box(game_id);
             })
             .on("click", function (d, i) {

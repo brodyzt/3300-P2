@@ -164,6 +164,7 @@ const buildGraph = async () => {
 
 
         function mouseOverCategory(category) {
+            console.log(category)
             d3.select("rect#" + category)
                 .transition()
                 .duration(100)
@@ -224,13 +225,10 @@ const buildGraph = async () => {
         enter.append("rect")
             .attr("width", "20")
             .attr("height", "20")
-            .attr("id", column_val => "_" + column_val.replace(/\ /g, ""))
             .attr("opacity", 0.8)
             .style("fill", function (d, index) {
                 return stackBarColorScale[columns.length - 1 - index]
             })
-            .on("mouseover", column_val => mouseOverCategory(column_val))
-            .on("mouseout", column_val => mouseOutCategory(column_val))
 
         enter.append("text")
             .text(column_val => column_val)
@@ -243,8 +241,10 @@ const buildGraph = async () => {
 
         let merged = legend_items.merge(enter)
         merged.attr("class", "legend-item")
+            .attr("id", column_val => "_" + column_val.replace(/\ /g, ""))
+            .on("mouseover", column_val => mouseOverCategory("_" + column_val.replace(/\ /g, "")))
+            .on("mouseleave", column_val => mouseOutCategory("_" + column_val.replace(/\ /g, "")))
             .attr("width", width / (series.length * 1.0))
-            .attr("id", column_val => column_val)
             .attr("transform", function (d, index) {
                 return "translate(-50," +
                     (legendYOffset + index * stackBarHeight / (series.length * 2.0)) +
@@ -260,8 +260,6 @@ const buildGraph = async () => {
                 self.select("rect")
                     .attr("id", column_val => "_" + column_val.replace(/\ /g, ""))
                     .style("fill", stackBarColorScale[columns.length - 1 - index])
-                    .on("mouseover", column_val => mouseOverCategory("_" + column_val.replace(/\ /g, "")))
-                    .on("mouseout", column_val => mouseOutCategory("_" + column_val.replace(/\ /g, "")))
             })
 
         stackBarXAxisSVGComponent.selectAll(".tick text").attr("y", 20).attr("dx", 0).attr("font-size", "10px");

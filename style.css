@@ -50,6 +50,10 @@ body>div:not(.lity) {
     stroke: white;
 }
 
+svg text {
+    user-select: none;
+}
+
 #force-graph-container {
     flex-grow: 0;
 }
@@ -105,10 +109,12 @@ body>div:not(.lity) {
 
 h2 {
     text-align: center;
+    user-select: none;
 }
 
 h1 {
     text-align: center;
+    user-select: none;
 }
 
 /* Chip Set Styling */
