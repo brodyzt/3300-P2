@@ -3,7 +3,7 @@
     src: url(Tr2n.TTF);
 }
 
-body>div {
+body > div:not(.lity) {
     margin-bottom: 100px;
 }
 

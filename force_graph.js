@@ -25,6 +25,7 @@ const startup = async () => {
     const id_to_data = await d3.json("id_to_data.json");
     const genre_data = await d3.json("genres_data.json");
     const platform_data = await d3.json("platforms_data.json");
+    const videos_data = await d3.json("videos_data.json");
 
     var fuse = new Fuse(fuse_data, options)
 
@@ -201,10 +202,27 @@ const startup = async () => {
         // Add Videos
         let videos_div = game_info_box.append("div")
         videos_div.append("span")
-            .text("Gameplay Videos:")
-        videos_div.append("div")
-            .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/uD4izuDMUQA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
-
+            .text("Gameplay Videos: ")
+        // videos_div.append("div")
+        //     .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/uD4izuDMUQA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
+        if ("videos" in id_to_data[game_id]) {
+            id_to_data[game_id].videos.forEach((video_id, i) => {
+                videos_div
+                    // .append("div")
+                    // .attr("class", "mdc-card__action-buttons")
+                    // .attr("style", "text-align:center; margin: auto;")
+                    .append("a")
+                    .attr("data-lity","")
+                    .attr("href", "https://www.youtube.com/watch?v=" + videos_data[video_id]["video_id"] + "?autoplay=1")
+                    .attr("target", "_blank")
+                    .append("button")
+                    // .attr("class", "mdc-button mdc-button--raised")
+                    .text("Play Video " + String(i + 1))
+            })
+        } else {
+            videos_div.append("span")
+                .text("Not found")
+        }
 
         // Add Buttons
         let action_button_div = game_info_box.append("div")
