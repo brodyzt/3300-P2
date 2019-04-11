@@ -29,7 +29,8 @@ const buildGraph = async () => {
         .attr("transform", "translate(" + (stackBarPadding.left + stackBarWidth / 2.0) + "," + (stackBarPadding.top + stackBarHeight + stackBarPadding.bottom / 2.0) + ")")
         .style("text-anchor", "middle")
         .attr("class", "axesLabel")
-        .text("Year");
+        .text("Year")
+        .style("font-size", "30px");
 
 
     let stackBarSvg = stackBarContainerSvg.append("g")
@@ -170,6 +171,7 @@ const buildGraph = async () => {
             .style("text-anchor", "middle")
             .attr("class", "axesLabel")
             .text("Percentage In Category")
+            .style("font-size", "30px");
 
 
         // Remove domain components garbage
@@ -272,7 +274,7 @@ const buildGraph = async () => {
             d3.select("rect#" + category)
                 .transition()
                 .duration(100)
-                .attr("width", 20)  
+                .attr("width", 20)
                 .attr("opacity", 0.8)
 
             d3.select("text#" + category)
@@ -318,6 +320,7 @@ const buildGraph = async () => {
 
         enter.append("text")
             .text(column_val => column_val)
+            .style("font-size", "15px")
             .attr("dx", "25")
             .attr("dy", "15")
             .attr("font-size", "10")
