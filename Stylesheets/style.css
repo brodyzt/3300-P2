@@ -201,7 +201,7 @@ body {
     background-position: 2px 3px;
     background-size: 10px 10px;
     box-shadow: 0px 3px 19px 0px #66ff6680;
-
+    cursor: pointer;
 }
 
 .param-containter {
