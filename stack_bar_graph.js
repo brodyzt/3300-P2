@@ -227,7 +227,7 @@ const buildGraph = async () => {
 
         /* start a data join using the y categories as the data */
         let legend_items = legend.selectAll("g")
-            .data(columns)
+            .data(columns.reverse())
 
         /* Remove legend elements that are no longer needed */
         legend_items.exit().remove();
