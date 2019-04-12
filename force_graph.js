@@ -117,9 +117,6 @@ const startup = async () => {
         genres.forEach(d => {
             genre_chip_div.append("div")
                 .attr("class", "mdc-chip")
-                .append("div")
-                .attr("class", "mdc-chip__text")
-                .text(genre_data[d]["name"])
                 .on("mouseover", function () {
                     let circles = d3.selectAll("circle." + "Genre_" + d);
                     circles.transition()
@@ -136,6 +133,9 @@ const startup = async () => {
                             return d3.select(this).attr("original_radius")
                         })
                 })
+                .append("div")
+                .attr("class", "mdc-chip__text")
+                .text(genre_data[d]["name"])
         })
         game_info_box.append("hr")
 
@@ -151,9 +151,6 @@ const startup = async () => {
             platforms.forEach(d => {
                 platform_chip_div.append("div")
                     .attr("class", "mdc-chip")
-                    .append("div")
-                    .attr("class", "mdc-chip__text")
-                    .text(platform_data[d]["name"])
                     .on("mouseover", function () {
                         let circles = d3.selectAll("circle." + "Platform_" + d);
                         circles.transition()
@@ -170,6 +167,9 @@ const startup = async () => {
                                 return d3.select(this).attr("original_radius")
                             })
                     })
+                    .append("div")
+                    .attr("class", "mdc-chip__text")
+                    .text(platform_data[d]["name"])
             })
         } else {
             platform_chip_div.append("span")
