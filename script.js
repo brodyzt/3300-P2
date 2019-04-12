@@ -12,9 +12,7 @@ const networkDescription = "This is a network"
 function clicked() {
     let self = d3.select(this);
 
-    let popup_html = '<html><body><span style="color:white;font-size:30px;">' + (self.attr("id") == "bar-graph-help" ? barGraphDescription : networkDescription) + '</span></body></html>';
-
-    lity("bar_graph_description.html")
+    lity(self.attr("id") == "bar-graph-help" ? "bar_graph_description.html" : "network_graph_description.html");
 
 }
 
