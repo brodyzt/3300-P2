@@ -146,14 +146,9 @@ h1 {
     font-family: tron;
     font-size: 90px;
     color: #6FC3DF;
-    /* text-shadow: 0 0 10px #fff */
 }
 
 .graph-title {
-    /* margin-top: 50px;
-    margin-left: auto;
-    margin-right: auto; */
-    /* width: 75%; */
     font-family: tron;
     font-size: 50px;
     color: #66ff66;
@@ -237,8 +232,6 @@ a {
 .outlined-button:hover {
     background-color: #db80fe;
     color: black !important;
-    /* animation-duration: 0.2s;
-    animation-name: change-color; */
 }
 
 .help-box {
@@ -275,13 +268,3 @@ a {
     max-width: 75% !important;
     max-height: 75% !important;
 }
-
-/* iframe {
-    width: unset !important;
-    height: unset !important;
-} */
-
-/* .help-box:hover {
-    background-color: #db80fe;
-    color: black !important;
-} */
