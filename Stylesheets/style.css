@@ -258,6 +258,22 @@ a {
     user-select: none;
 }
 
+.info-button {
+    margin-left: 25px;
+    font-size: 25px;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    border-style: solid;
+    border-width: 2px;
+    background-color: black;
+    cursor: pointer;
+}
+
+.lity-container {
+    width: 75% !important;
+    max-width: none !important;
+}
 
 /* .help-box:hover {
     background-color: #db80fe;
