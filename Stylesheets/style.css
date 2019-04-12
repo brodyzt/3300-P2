@@ -71,6 +71,10 @@ svg text {
     box-shadow: 0px 3px 19px 0px #db80fe80;
 }
 
+#game-info * {
+    font-family: Roboto;
+}
+
 #game-info>div {
     padding: 4px;
 }
@@ -266,5 +270,4 @@ a {
 .lity-container {
     width: 75% !important; 
     max-width: 75% !important;
-    max-height: 75% !important;
 }

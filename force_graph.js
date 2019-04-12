@@ -91,6 +91,8 @@ const startup = async () => {
         /* remove previous data from info box */
         empty_info_box();
 
+        const header_size = "20px";
+
         /* scroll info box to top when new game info is displayed */
         document.getElementById("game-info").scrollTop = 0;
 
@@ -108,8 +110,9 @@ const startup = async () => {
         let genre_chip_div = game_info_box.append("div");
         genre_chip_div.attr("class", "mdc-chip-set");
         genre_chip_div.append("span")
-            .text("Genres")
+            .text("Genres: ")
             .attr("style", "margin-right:10px;")
+            .style("font-size", header_size)
         let genres = id_to_data[game_id]["genres"];
         genres.forEach(d => {
             genre_chip_div.append("div")
@@ -140,8 +143,9 @@ const startup = async () => {
         let platform_chip_div = game_info_box.append("div");
         platform_chip_div.attr("class", "mdc-chip-set");
         platform_chip_div.append("span")
-            .text("Platforms")
+            .text("Platforms: ")
             .attr("style", "margin-right:10px;")
+            .style("font-size", header_size)
         if ("platforms" in id_to_data[game_id]) {
             let platforms = id_to_data[game_id]["platforms"];
             platforms.forEach(d => {
@@ -169,6 +173,7 @@ const startup = async () => {
             })
         } else {
             platform_chip_div.append("span")
+                .style("font-size", header_size)
                 .text("None found")
         }
         game_info_box.append("hr")
@@ -178,6 +183,7 @@ const startup = async () => {
         rating_div.append("span")
             .text("Rating: ")
             .attr("style", "margin-right:10px;")
+            .style("font-size", header_size)
         rating_div.append("span")
             .text(function () {
                 if ("rating" in id_to_data[game_id]) {
@@ -192,8 +198,9 @@ const startup = async () => {
 
         /* Add summary category to info box */
         game_info_box.append("div")
-            .attr("class", "demo-card__secondary mdc-typography mdc-typography--body2 summary-box")
+            // .attr("class", "demo-card__secondary mdc-typography mdc-typography--body2 summary-box")
             .text(id_to_data[game_id]["summary"])
+            .style("font-size", "20px")
         game_info_box.append("hr")
 
 
